@@ -27,7 +27,7 @@ import db.beanConnector;
 		String modo = request.getParameter("modo");
 		
 	
-		gstusuario gusu = new gstusuario();    
+		gstparametro gusu = new gstparametro();    
 		usuario usu = gusu.validar(login, clave);
 		//db.
 		String destino  ="";

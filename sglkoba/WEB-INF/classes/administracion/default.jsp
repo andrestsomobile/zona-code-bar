@@ -16,6 +16,7 @@
     <th width="25%">Usuarios</th>
     <th width="25%">Grupos</th>
     <th width="25%">Permisos</th>
+    <th width="25%">Param&eacute;tros</th>
   </tr>
   <%
   administracion.control.gstpermiso gper = new administracion.control.gstpermiso();
@@ -48,6 +49,12 @@
     <% if( gper.verIzquierdo(grupo, "administracion", "permiso.jsp") ) { %>
       <a href="main.jsp?app=administracion&modulo=permiso"><br>
       &gt;&gt; Ingresar</a>
+      <% } %>
+      </td>
+      <td>Defina los permisos de acceso a la aplicacion para un grupo determinado<br>
+    <% if( gper.verIzquierdo(grupo, "administracion", "parametrizacion_bodega.jsp") ) { %>
+      <a href="main.jsp?app=administracion&modulo=parametrizacion"><br>
+      &gt;&gt; Param&eacute;tros</a>
       <% } %>
       </td>
   </tr>

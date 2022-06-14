@@ -60,7 +60,7 @@ if(epcodsx!=null) entity = control.getentradapatio(epcodsx);
     <tr> 
       <td>Empresa</td>
       <td width="227" > <input style="background-color:#eeeeee" name="epcodcia" readonly="true" type="text" value="<%= entity!=null?entity.getepcodcia():usu_cliente!=null?usu_cliente:""  %>" size="5"    validacion="R" men_validacion="usuario " > 
-        <textarea style="background-color:#eeeeee" readonly name="epcodciadesc" cols="15" rows="2" ><%= entity!=null?new gstusuario().getusuario(entity.getepcodcia()).getusunombre():usu_cliente!=null?new gstusuario().getusuario(usu_cliente).getusunombre():""%></textarea> 
+        <textarea style="background-color:#eeeeee" readonly name="epcodciadesc" cols="15" rows="2" ><%=entity!=null?new gstparametro().getusuario(entity.getepcodcia()).getusunombre():usu_cliente!=null?new gstparametro().getusuario(usu_cliente).getusunombre():""%></textarea> 
         <% if(usu_cliente==null) { if(entity==null) {%> <a href="javascript:showList('lista.jsp?app=archivo&modulo=usuario&estado=AC&usupatio=S&campo=epcodcia&nombre=epcodciadesc')"><img alt='Buscar Empresa' src="/zona/disenno/im_menus/search.jpg" width="25" height="22" border="0"></a> 
         <%} }%> 
       <td colspan="2"> <table width="100%" border="0" cellspacing="0" cellpadding="0" style="font-size:12px;">

@@ -15,6 +15,7 @@
 <form-bean name="zonaForm" type="maestro.form.zonaForm" />
 <form-bean name="transportadoraForm" type="maestro.form.transportadoraForm" />
 <form-bean name="usuarioForm" type="administracion.form.usuarioForm" />
+<form-bean name="parametroForm" type="administracion.form.parametroForm" />
 <form-bean name="empleadoForm" type="maestro.form.empleadoForm" />
 <form-bean name="bodegaForm" type="maestro.form.bodegaForm" />
 <form-bean name="empresaForm" type="administracion.form.empresaForm" />
@@ -150,6 +151,13 @@
   	<forward name="index_movil" path="/index_movil.jsp" redirect="false" />
 </action>
 
+
+<action path="/validarUsuarioMovil" type="appmovil.rest.UsuarioMovilAction"/>
+<action path="/getTraficoMovil" type="appmovil.rest.TraficoMovilAction"/>
+<action path="/entradaMovil" type="appmovil.rest.EntradaMovilAction"/>
+<action path="/finalizarIngresoMovil" type="appmovil.rest.FinalizarIngresoMovilAction"/>
+
+
  
 <action path="/categoriaAction" type="maestro.action.categoriaAction" name="categoriaForm" input="/main.jsp?app=maestro&amp;modulo=categoria_datos" scope="request">
 <forward name="categoria_datos" path="/main.jsp?app=maestro&amp;modulo=categoria_datos" redirect="false" />
@@ -195,6 +203,14 @@
 <forward name="usuario_datos" path="/main.jsp?app=administracion&amp;modulo=usuario_datos" redirect="false" />
 <forward name="usuario" path="/main.jsp?app=administracion&amp;modulo=usuario" redirect="false" />
 </action>
+
+<action path="/parametroAction" type="administracion.action.parametroAction" name="parametroForm" input="/main.jsp?app=administracion&amp;modulo=parametrizacion_datos" scope="request">
+<forward name="parametrizacion_datos" path="/main.jsp?app=administracion&amp;modulo=parametrizacion_datos" redirect="false" />
+<forward name="parametro" path="/main.jsp?app=administracion&amp;modulo=parametro" redirect="false" />
+</action>
+
+
+
 <action path="/empleadoAction" type="maestro.action.empleadoAction" name="empleadoForm" input="/main.jsp?app=maestro&amp;modulo=empleado_datos" scope="request">
 <forward name="empleado_datos" path="/main.jsp?app=maestro&amp;modulo=empleado_datos" redirect="false" />
 <forward name="empleado" path="/main.jsp?app=maestro&amp;modulo=empleado" redirect="false" />

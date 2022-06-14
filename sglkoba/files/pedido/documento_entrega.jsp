@@ -81,60 +81,59 @@ transportadora transp = gtrans.gettransportadora(ped.getPedtransportadora());
         	<tr> 
 
           		<%
-              		if(tipo.equals("DETALLADO")) {
-                  		gstproducto gprod = new gstproducto();
-                  		Collection detalles = grefp.getlistareferencia_pedido_ruta_logica(pedcodsx);
-                  		Iterator ite_det = detalles.iterator();
-						int totalDet = detalles.size();
-						int contadorDet = 0;
+           		if(tipo.equals("DETALLADO")) {
+           		                  		gstproducto gprod = new gstproducto();
+           		                  		Collection detalles = grefp.getlistareferencia_pedido_ruta_logica(pedcodsx);
+           		                  		Iterator ite_det = detalles.iterator();
+           						int totalDet = detalles.size();
+           						int contadorDet = 0;
 
-              			while(ite_det.hasNext()) {
-              				referencia_pedido refp = (referencia_pedido) ite_det.next();
-              			
-              				producto prod = gprod.getproducto(refp.getrefpproducto());
-              				String unid_mpack = prod.getprounimasterpac();            	        	
-              	        
-              	            cantidad = refp.getrefpcantidad();
-              	            String mpack =  util.Math.dividir( cantidad, unid_mpack);
-              	        	//String pesoneto_ref = util.Math.multiplicar( prod.getprokilovolumen() , refp.getrefpcantidad() );
-              	        	String pesoneto_ref = util.Math.multiplicar( prod.getprokilovolumen() , refp.getrefpcantidad() );
-              	        	
-              	        	String pesobruto_ref = refp.getRefppesobrutototal();// pesobruto_unit; //util.Math.multiplicar( pesobruto_unit, cantidad );
-              	        	pesobruto_ref = util.Math.sumar(pesobruto_ref,util.Math.multiplicar("20",mpack));
-              	        	System.out.println("------"+pesoneto_unit);
-              	        	pesoneto_total = util.Math.sumar( pesoneto_total, pesoneto_ref);
-              	        	pesobruto_total = util.Math.sumar( pesobruto_total, pesobruto_ref);
-              	        	total_cantidad = util.Math.sumar( total_cantidad, cantidad);
-              	        	total_mpack = util.Math.sumar( total_mpack, mpack);
-              				producto_cliente procc = gprocc.getproducto_cliente( cli.getclicodsx(), prod.getprocodsx());
-              				
-                    	  	bodega bod =gbod.getbodega( refp.getRefpbodega());
-            	  			entrada ent = gent.getentrada( refp.getRefpentrada());
-            	  			ingreso ing = ging.getingreso( ent.getentcodingreso());
-            	  			lote_trafico lt = null;
-            	  			if (ent.getentlote() != null) {
-            	  				lt = gl.getlote_trafico(ent.getentlote());
-            	  			}
-            	 
-            	  			String embarque= "";
-            	  			String BL= "&nbsp;";
-            	  			String declaracion ="&nbsp;";
-            	  			if(ing.getingtipo().equals("TRAFICO")) {
-            	  				trafico traf = gtraf.gettrafico( ing.getingtrafico());
-            	  				embarque = traf.gettrafembarque();
-            	  				BL= traf.gettrafdocumento();
-            	  			}else {
-            		  			embarque = "Ingreso de tipo: " + ing.getingtipo();
-            	  			}
-            	  			if(refp.getRefpnacdetalle()!=null && !refp.getRefpnacdetalle().equals(""))  {
-            		  			nacionalizacion_detalle nacdet = gnacdet.getnacionalizacion_detalle(refp.getRefpnacdetalle() );
-            		 			nacionalizacion nac = gnac.getnacionalizacion( nacdet.getnadcodnac());
-            		  			declaracion = nac.getnacdeclaracion();
-            	  			}
-							if (contadorDet > 0) {
-								lineaadicional += 0.75;
-							
-						%>
+           		              			while(ite_det.hasNext()) {
+           		              				referencia_pedido refp = (referencia_pedido) ite_det.next();
+           		              			
+           		              				producto prod = gprod.getproducto(refp.getrefpproducto());
+           		              				String unid_mpack = prod.getprounimasterpac();            	        	
+           		              	        
+           		              	            cantidad = refp.getrefpcantidad();
+           		              	            String mpack =  util.Math.dividir( cantidad, unid_mpack);
+           		              	        	//String pesoneto_ref = util.Math.multiplicar( prod.getprokilovolumen() , refp.getrefpcantidad() );
+           		              	        	String pesoneto_ref = util.Math.multiplicar( prod.getprokilovolumen() , refp.getrefpcantidad() );
+           		              	        	
+           		              	        	String pesobruto_ref = refp.getRefppesobrutototal();// pesobruto_unit; //util.Math.multiplicar( pesobruto_unit, cantidad );
+           		              	        	pesobruto_ref = util.Math.sumar(pesobruto_ref,util.Math.multiplicar("20",mpack));
+           		              	        	System.out.println("------"+pesoneto_unit);
+           		              	        	pesoneto_total = util.Math.sumar( pesoneto_total, pesoneto_ref);
+           		              	        	pesobruto_total = util.Math.sumar( pesobruto_total, pesobruto_ref);
+           		              	        	total_cantidad = util.Math.sumar( total_cantidad, cantidad);
+           		              	        	total_mpack = util.Math.sumar( total_mpack, mpack);
+           		              				producto_cliente procc = gprocc.getproducto_cliente( cli.getclicodsx(), prod.getprocodsx());
+           		              				
+           		                    	  	parametro bod =gbod.getbodega( refp.getRefpbodega());
+           		            	  			entrada ent = gent.getentrada( refp.getRefpentrada());
+           		            	  			ingreso ing = ging.getingreso( ent.getentcodingreso());
+           		            	  			lote_trafico lt = null;
+           		            	  			if (ent.getentlote() != null) {
+           		            	  				lt = gl.getlote_trafico(ent.getentlote());
+           		            	  			}
+           		            	 
+           		            	  			String embarque= "";
+           		            	  			String BL= "&nbsp;";
+           		            	  			String declaracion ="&nbsp;";
+           		            	  			if(ing.getingtipo().equals("TRAFICO")) {
+           		            	  				trafico traf = gtraf.gettrafico( ing.getingtrafico());
+           		            	  				embarque = traf.gettrafembarque();
+           		            	  				BL= traf.gettrafdocumento();
+           		            	  			}else {
+           		            		  			embarque = "Ingreso de tipo: " + ing.getingtipo();
+           		            	  			}
+           		            	  			if(refp.getRefpnacdetalle()!=null && !refp.getRefpnacdetalle().equals(""))  {
+           		            		  			nacionalizacion_detalle nacdet = gnacdet.getnacionalizacion_detalle(refp.getRefpnacdetalle() );
+           		            		 			nacionalizacion nac = gnac.getnacionalizacion( nacdet.getnadcodnac());
+           		            		  			declaracion = nac.getnacdeclaracion();
+           		            	  			}
+           							if (contadorDet > 0) {
+           								lineaadicional += 0.75;
+           		%>
 							<tr>
 						   		
              				<%}%> 

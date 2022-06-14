@@ -20,7 +20,7 @@ import org.apache.struts.action.*;
 	 
 		String login = request.getParameter("login");
 		String clave = request.getParameter("clave");
-		gstusuario gusu = new gstusuario();
+		gstparametro gusu = new gstparametro();
 		usuario usu = gusu.validar(login, clave);
 		String destino  ="";
 		if(usu==null) 

@@ -108,42 +108,41 @@ transportadora transp = gtrans.gettransportadora(ped.getPedtransportadora());
           		<td align="right"><%= util.JhFormat.getFormatedNumber(pesoneto_ref) %></td>
           		<td align="right"><%= util.JhFormat.getFormatedNumber(pesobruto_ref )%></td>
           		<%
-              		if(tipo.equals("DETALLADO")) {
-                  		gstproducto gprod = new gstproducto();
-                  		Collection detalles = grefp.getlistareferencia_pedido(pedcodsx, refpproducto);
-                  		Iterator ite_det = detalles.iterator();
-						int totalDet = detalles.size();
-						int contadorDet = 0;
+          		if(tipo.equals("DETALLADO")) {
+          		                  		gstproducto gprod = new gstproducto();
+          		                  		Collection detalles = grefp.getlistareferencia_pedido(pedcodsx, refpproducto);
+          		                  		Iterator ite_det = detalles.iterator();
+          						int totalDet = detalles.size();
+          						int contadorDet = 0;
 
-              			while(ite_det.hasNext()) {
-            	  			pedido.entity.referencia_pedido refp = (pedido.entity.referencia_pedido) ite_det.next();
-            	  			bodega bod =gbod.getbodega( refp.getRefpbodega());
-            	  			entrada ent = gent.getentrada( refp.getRefpentrada());
-            	  			ingreso ing = ging.getingreso( ent.getentcodingreso());
-            	  			lote_trafico lt = null;
-            	  			if (ent.getentlote() != null) {
-            	  				lt = gl.getlote_trafico(ent.getentlote());
-            	  			}
-            	 
-            	  			String embarque= "";
-            	  			String BL= "&nbsp;";
-            	  			String declaracion ="&nbsp;";
-            	  			if(ing.getingtipo().equals("TRAFICO")) {
-            	  				trafico traf = gtraf.gettrafico( ing.getingtrafico());
-            	  				embarque = traf.gettrafembarque();
-            	  				BL= traf.gettrafdocumento();
-            	  			}else {
-            		  			embarque = "Ingreso de tipo: " + ing.getingtipo();
-            	  			}
-            	  			if(refp.getRefpnacdetalle()!=null && !refp.getRefpnacdetalle().equals(""))  {
-            		  			nacionalizacion_detalle nacdet = gnacdet.getnacionalizacion_detalle(refp.getRefpnacdetalle() );
-            		 			nacionalizacion nac = gnac.getnacionalizacion( nacdet.getnadcodnac());
-            		  			declaracion = nac.getnacdeclaracion();
-            	  			}
-							if (contadorDet > 0) {
-								lineaadicional += 0.75;
-							
-						%>
+          		              			while(ite_det.hasNext()) {
+          		            	  			pedido.entity.referencia_pedido refp = (pedido.entity.referencia_pedido) ite_det.next();
+          		            	  			parametro bod =gbod.getbodega( refp.getRefpbodega());
+          		            	  			entrada ent = gent.getentrada( refp.getRefpentrada());
+          		            	  			ingreso ing = ging.getingreso( ent.getentcodingreso());
+          		            	  			lote_trafico lt = null;
+          		            	  			if (ent.getentlote() != null) {
+          		            	  				lt = gl.getlote_trafico(ent.getentlote());
+          		            	  			}
+          		            	 
+          		            	  			String embarque= "";
+          		            	  			String BL= "&nbsp;";
+          		            	  			String declaracion ="&nbsp;";
+          		            	  			if(ing.getingtipo().equals("TRAFICO")) {
+          		            	  				trafico traf = gtraf.gettrafico( ing.getingtrafico());
+          		            	  				embarque = traf.gettrafembarque();
+          		            	  				BL= traf.gettrafdocumento();
+          		            	  			}else {
+          		            		  			embarque = "Ingreso de tipo: " + ing.getingtipo();
+          		            	  			}
+          		            	  			if(refp.getRefpnacdetalle()!=null && !refp.getRefpnacdetalle().equals(""))  {
+          		            		  			nacionalizacion_detalle nacdet = gnacdet.getnacionalizacion_detalle(refp.getRefpnacdetalle() );
+          		            		 			nacionalizacion nac = gnac.getnacionalizacion( nacdet.getnadcodnac());
+          		            		  			declaracion = nac.getnacdeclaracion();
+          		            	  			}
+          							if (contadorDet > 0) {
+          								lineaadicional += 0.75;
+          		%>
 							<tr>
 						   		<td>&nbsp;</td>
 						   		<td>&nbsp;</td>
