@@ -1,0 +1,1 @@
+alter table public.usuario add usucedula character varying
