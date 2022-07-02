@@ -11,13 +11,14 @@ public class registro_pedido_detalle
     implements Serializable
 {
 
-    public registro_pedido_detalle(String rpdecodsx, String rpderegped, String rpdenumpedido, String rpdetire, String rpdeterminado)
+    public registro_pedido_detalle(String rpdecodsx, String rpderegped, String rpdenumpedido, String rpdetire, String rpdeterminado, String rpnovedad)
     {
         this.rpdecodsx = rpdecodsx;
         this.rpderegped = rpderegped;
         this.rpdenumpedido = rpdenumpedido;
         this.rpdetire = rpdetire;
         this.rpdeterminado = rpdeterminado;
+        this.rpnovedad = rpnovedad;
     }
 
     public String getrpdecodsx()
@@ -44,6 +45,10 @@ public class registro_pedido_detalle
     {
         return rpdeterminado;
     }
+    
+    public String getrpnovedad() {
+    	return rpnovedad;
+    }
 
     public void setentcodsx(String new_rpdecodsx)
     {
@@ -69,10 +74,15 @@ public class registro_pedido_detalle
     {
         rpdeterminado = new_rpdeterminado;
     }
+    
+    public void setrpnovedad(String novedad) {
+    	rpnovedad = novedad;
+    }
 
     private String rpdecodsx;
     private String rpderegped;
     private String rpdenumpedido;
     private String rpdetire;
     private String rpdeterminado;
+    private String rpnovedad;
 }

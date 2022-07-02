@@ -24,6 +24,7 @@ import ingreso.control.gsttrafico;
 import ingreso.entity.ingreso;
 import ingreso.entity.trafico;
 import ingreso.form.ingresoForm;
+import maestro.control.gstbodega;
 import util.JsonUtil;
 
 public class EntradaMovilAction extends Action {
@@ -94,7 +95,18 @@ public class EntradaMovilAction extends Action {
 			// ahora agrego las referencias usando la informacion de lotes y referencia_factura
 			if (ing != null && ing.getingtipo().equalsIgnoreCase("TRAFICO")) {
 				mensaje = "Entrada creada exitosamente";
-				control.crearEntradasTraficoMovil(codigoBarra,ing.getingcodsx(), ing.getingtrafico(), bodega, ubicacion,cantidad);
+				gstbodega gsbodega = new gstbodega();
+				maestro.entity.bodega bod = gsbodega.getbodega_by_ukey(bodega);
+				
+				if(bod == null) {
+					isValid = false;
+					mensaje = "No existe la bodega " + bodega;
+					msg.setMessage(mensaje);
+					msg.setStatus(JsonUtil.FAIL);
+				}
+				
+				if(isValid)
+					control.crearEntradasTraficoMovil(codigoBarra,ing.getingcodsx(), ing.getingtrafico(), bod.getbodcodsx(), ubicacion,cantidad);
 			} else {
 				if(traf.getTrafestado().equals(ingestado)) {
 					control.crearingreso(ingcodcia, ingfecha, ingtipo, ingtrafico == null || (ingtrafico != null && ingtrafico.equals("")) ? null : ingtrafico,
@@ -119,8 +131,11 @@ public class EntradaMovilAction extends Action {
 				}
 			}
 
-			msg.setMessage(mensaje);
-			msg.setStatus(JsonUtil.SUCESS);
+			if(isValid) {
+				msg.setMessage(mensaje);
+				msg.setStatus(JsonUtil.SUCESS);
+			}
+			
 
 		} catch (SQLException e) {
 			e.printStackTrace();
