@@ -4,7 +4,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +27,9 @@ import ingreso.entity.trafico;
 import maestro.control.gstempleado;
 import maestro.entity.empleado;
 import pedido.control.gstpedido;
+import pedido.control.gstreferencia_pedido;
 import pedido.entity.pedido;
+import pedido.entity.referencia_pedido;
 import registro.control.gstregistro_pedido;
 import registro.control.gstregistro_pedido_detalle;
 import util.JsonUtil;
@@ -57,7 +62,7 @@ public class RegistroPedidoMovilAction extends Action {
 				Date date = new Date();
 				SimpleDateFormat fecha = new SimpleDateFormat("yyyy-MM-dd");
 				String ingfecha = fecha.format(date);
-				SimpleDateFormat hora = new SimpleDateFormat("H:i:s");
+				SimpleDateFormat hora = new SimpleDateFormat("HH:mm:ss");
 				String inghora = hora.format(date);
 				String[] rcPedido = pedidos.split(",");
 				gstusuario gusu = new gstusuario();
@@ -70,7 +75,7 @@ public class RegistroPedidoMovilAction extends Action {
 				
 				gstregistro_pedido grpedido = new gstregistro_pedido();
 				idPedido = grpedido.Getrepecodsx();
-				boolean creoPedido = grpedido.crearregistro_pedido(idPedido, ingfecha, emp.getempcodsx(), inghora, "", 
+				boolean creoPedido = grpedido.crearregistro_pedido(idPedido, ingfecha, emp.getempcodsx(), inghora, inghora, 
 						"0", "TRAMITE");
 				
 				if(creoPedido) {
@@ -78,9 +83,10 @@ public class RegistroPedidoMovilAction extends Action {
 						gstpedido gstpedido = new gstpedido();
 						pedido ped = gstpedido.getpedidoByNumPedidoDate(p, ingfecha);
 						gstregistro_pedido_detalle grdpedido = new gstregistro_pedido_detalle();
-						grdpedido.crearregistro_pedido_detalle(null, idPedido, ped.getpedcodsx(), inghora, "N");
+						grdpedido.crearregistro_pedido_detalle(grdpedido.Getrpdecodsx(), idPedido, ped.getpedcodsx(), inghora, "N");
 					}
 				} else {
+					isValid = false;
 					mensaje = "No se pudo crear el registro del pedido ";
 					msg.setMessage(mensaje);
 					msg.setStatus(JsonUtil.FAIL);
@@ -88,15 +94,31 @@ public class RegistroPedidoMovilAction extends Action {
 			}
 
 		} catch (SQLException e) {
+			isValid = false;
 			e.printStackTrace();
 			mensaje = "No se pudo crear el registro del pedido: " + e.getLocalizedMessage();
 			msg.setMessage(mensaje);
 			msg.setStatus(JsonUtil.FAIL);
 		}
 
-		msg.setMessage("Pedido registrado exitosamente");
-		msg.setData(idPedido);
-		msg.setStatus(JsonUtil.SUCESS);
+		if(isValid) {
+			
+			gstreferencia_pedido gstrpedido = new gstreferencia_pedido();
+			Collection listPed = gstrpedido.getReferenciaByPedido(idPedido);
+			List<RegistroPedidoResponseDTO> responseDTO = new ArrayList<RegistroPedidoResponseDTO>();
+			for(Object obj: listPed) {
+				appmovil.rest.referencia_pedido r = (appmovil.rest.referencia_pedido) obj;
+				RegistroPedidoResponseDTO responsePedido = new RegistroPedidoResponseDTO();
+				responsePedido.setIdRegistroPedido(idPedido);
+				responsePedido.setRefPedido(r);
+				responseDTO.add(responsePedido);
+			}
+			
+			msg.setMessage("Pedido registrado exitosamente");
+			msg.setData(responseDTO);
+			msg.setStatus(JsonUtil.SUCESS);
+		}
+		
 		JSONObject jsonObject = new JSONObject(msg);
 		String myJson = jsonObject.toString();
 		response.setContentType("application/json");

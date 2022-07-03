@@ -52,7 +52,7 @@ public class UpdateRegistroPedidoMovilAction extends Action {
 				Date date = new Date();
 				SimpleDateFormat fecha = new SimpleDateFormat("yyyy-MM-dd");
 				String ingfecha = fecha.format(date);
-				SimpleDateFormat hora = new SimpleDateFormat("H:i:s");
+				SimpleDateFormat hora = new SimpleDateFormat("HH:mm:ss");
 				String inghora = hora.format(date);
 				
 				
@@ -82,6 +82,7 @@ public class UpdateRegistroPedidoMovilAction extends Action {
 							gstpedido.updatepedido(ped);
 							
 							if(!editoRegistro) {
+								isValid = false;
 								mensaje = "El registro del pedido no se completo";
 								msg.setMessage(mensaje);
 								msg.setStatus(JsonUtil.FAIL);
@@ -97,6 +98,7 @@ public class UpdateRegistroPedidoMovilAction extends Action {
 						}
 					}
 				} else {
+					isValid = false;
 					mensaje = "El registro del pedido es invalido";
 					msg.setMessage(mensaje);
 					msg.setStatus(JsonUtil.FAIL);
@@ -104,6 +106,7 @@ public class UpdateRegistroPedidoMovilAction extends Action {
 			}
 
 		} catch (Exception e) {
+			isValid = false;
 			e.printStackTrace();
 			mensaje = "No se pudo finalizar el registro del pedido: " + e.getLocalizedMessage();
 			msg.setMessage(mensaje);

@@ -24,7 +24,7 @@ public class IngresoMovilAction {
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 		gstingreso control = new gstingreso();
 		Date date = new Date();
-		SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd H:i:s");
+		SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String mensaje = "";
 		JsonUtil msg = new JsonUtil();
 		String trafico = request.getParameter("trafico");

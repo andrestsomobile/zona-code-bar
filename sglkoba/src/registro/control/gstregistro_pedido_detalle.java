@@ -87,8 +87,9 @@ public class gstregistro_pedido_detalle extends GstTabla
         throws SQLException
     {
         String cad = (new StringBuilder()).append("update registro_pedido_detalle set  rpdecodsx = ").append(entity.getrpdecodsx() != null ? (new StringBuilder()).append("'").append(entity.getrpdecodsx()).append("'").toString() : "NULL").append(",").append(" rpderegped= ").append(entity.getrpderegped() != null ? (new StringBuilder()).append("'").append(entity.getrpderegped()).append("'").toString() : "NULL").append(",").append(" rpdenumpedido = ").append(entity.getrpdenumpedido() != null ? (new StringBuilder()).append("'").append(entity.getrpdenumpedido()).append("'").toString() : "NULL").append(",").append(" rpdetire = ").append(entity.getrpdetire() != null ? (new StringBuilder()).append("'").append(entity.getrpdetire()).append("'").toString() : "NULL")
+        		.append(",").append(" rpdeterminado = ").append(entity.getrpdeterminado() != null ? (new StringBuilder()).append("'").append(entity.getrpdeterminado()).append("'").toString() : "NULL")
         		.append(",").append(" rpnovedad = ").append(entity.getrpnovedad() != null ? (new StringBuilder()).append("'").append(entity.getrpnovedad()).append("'").toString() : "NULL")
-        		.append(" where repecodsx = ").append(entity.getrpdecodsx()).toString();
+        		.append(" where rpdecodsx = ").append(entity.getrpdecodsx()).toString();
         int resp = db.executeUpdate(cad);
         return resp != 0;
     }
@@ -139,10 +140,10 @@ public class gstregistro_pedido_detalle extends GstTabla
     public String Getrpdecodsx()
     {
         String cad = "";
-        cad = "SELECT max(rpdecodsx) FROM registro_pedido_detalle";
+        cad = "SELECT max(rpdecodsx)+1 FROM registro_pedido_detalle";
         System.out.print(cad);
         String resp = getCampo(cad);
-        return resp == null ? "0" : resp;
+        return resp == null ? "1" : resp;
     }
 
     public String Getrpdecodsx(String Ident)
