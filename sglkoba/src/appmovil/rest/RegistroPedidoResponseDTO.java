@@ -1,13 +1,14 @@
 package appmovil.rest;
 
+import pedido.entity.referencia_pedido;
 
 public class RegistroPedidoResponseDTO {
-	private appmovil.rest.referencia_pedido refPedido;
+	private referencia_pedido refPedido;
 	private String idRegistroPedido;
-	public appmovil.rest.referencia_pedido getRefPedido() {
+	public referencia_pedido getRefPedido() {
 		return refPedido;
 	}
-	public void setRefPedido(appmovil.rest.referencia_pedido refPedido) {
+	public void setRefPedido(referencia_pedido refPedido) {
 		this.refPedido = refPedido;
 	}
 	public String getIdRegistroPedido() {

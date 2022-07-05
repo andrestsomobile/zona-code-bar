@@ -156,6 +156,7 @@
 <action path="/finalizarIngresoMovil" type="appmovil.rest.FinalizarIngresoMovilAction"/>
 <action path="/registrarPedidoMovil" type="appmovil.rest.RegistroPedidoMovilAction"/>
 <action path="/finalizarPedidoMovil" type="appmovil.rest.UpdateRegistroPedidoMovilAction"/>
+<action path="/listarPedidoMovil" type="appmovil.rest.ListarPedidoMovilAction"/>
 
  
 <action path="/categoriaAction" type="maestro.action.categoriaAction" name="categoriaForm" input="/main.jsp?app=maestro&amp;modulo=categoria_datos" scope="request">
