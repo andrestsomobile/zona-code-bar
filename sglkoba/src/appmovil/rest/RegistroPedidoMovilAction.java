@@ -102,20 +102,10 @@ public class RegistroPedidoMovilAction extends Action {
 		}
 
 		if(isValid) {
-			
-			gstreferencia_pedido gstrpedido = new gstreferencia_pedido();
-			Collection listPed = gstrpedido.getReferenciaByPedido(idPedido);
-			List<RegistroPedidoResponseDTO> responseDTO = new ArrayList<RegistroPedidoResponseDTO>();
-			for(Object obj: listPed) {
-				referencia_pedido r = (referencia_pedido) obj;
-				RegistroPedidoResponseDTO responsePedido = new RegistroPedidoResponseDTO();
-				responsePedido.setIdRegistroPedido(idPedido);
-				responsePedido.setRefPedido(r);
-				responseDTO.add(responsePedido);
-			}
-			
+			RegistroPedidoResponseDTO responsePedido = new RegistroPedidoResponseDTO();
+			responsePedido.setIdRegistroPedido(idPedido);			
 			msg.setMessage("Pedido registrado exitosamente");
-			msg.setData(responseDTO);
+			msg.setData(responsePedido);
 			msg.setStatus(JsonUtil.SUCESS);
 		}
 		

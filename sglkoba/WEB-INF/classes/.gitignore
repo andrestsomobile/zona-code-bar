@@ -9,7 +9,6 @@
 /libconsultas/
 /mapas/
 /parametros.properties
-/pedido/
 /reportes/
 /sap/
 /templates/
@@ -36,6 +35,7 @@
 /movil_reubicacion.json
 /nacionalizacion/
 /patios/
+/pedido/
 /pruebas/
 /qrcode.js
 /registro/
