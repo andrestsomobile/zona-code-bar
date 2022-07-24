@@ -81,9 +81,17 @@ public class ListarPedidoMovilAction extends Action {
 					responseDTO.add(responsePedido);
 				}
 				
-				msg.setMessage("Pedido listado exitosamente");
+				
 				msg.setData(responseDTO);
-				msg.setStatus(JsonUtil.SUCESS);
+				
+				if(responseDTO != null && !responseDTO.isEmpty()) {
+					msg.setMessage("Pedido listado exitosamente");
+					msg.setStatus(JsonUtil.SUCESS);
+				} else {
+					msg.setStatus(JsonUtil.FAIL);
+					msg.setMessage("No se encontro pedido");
+				}
+				
 			}
 
 		} catch (Exception e) {
