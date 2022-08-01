@@ -78,7 +78,6 @@ public class gstregistro_pedido_detalle extends GstTabla
     public int getregistro_pedido_detalle_pendiente(String rpderegped)
     {
         String cad = (new StringBuilder()).append("SELECT count(1) FROM registro_pedido_detalle WHERE rpdeterminado = 'N' AND rpderegped ='").append(rpderegped).append("'").toString();
-        System.out.print(cad);
         String resp = getCampo(cad);
         return resp == null ? 0 : Integer.parseInt(resp);
     }

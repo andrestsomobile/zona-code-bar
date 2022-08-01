@@ -60,7 +60,7 @@ public class UsuarioMovilAction extends Action {
 			sesion.setAttribute("usuario", usu);
 			sesion.setAttribute("grupo", gru);
 			sesion.setAttribute("empresa", emp);
-			gusu.asignarusuario(login); // le define a la bd quien es el usuario efectivo
+			//gusu.asignarusuario(login); // le define a la bd quien es el usuario efectivo
 			if (modo != null && modo.equalsIgnoreCase("movil")) {
 				destino = "main_movil";
 			} else {

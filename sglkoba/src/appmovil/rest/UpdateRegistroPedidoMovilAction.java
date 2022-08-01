@@ -78,9 +78,6 @@ public class UpdateRegistroPedidoMovilAction extends Action {
 							rpedido.setrepeesta("FINALIZADO");
 							boolean editoRegistro = grpedido.updateregistro_pedido(rpedido);
 							
-							ped.setpedestado("FINALIZADO");
-							gstpedido.updatepedido(ped);
-							
 							if(!editoRegistro) {
 								isValid = false;
 								mensaje = "El registro del pedido no se completo";
