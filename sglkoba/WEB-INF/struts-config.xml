@@ -157,7 +157,7 @@
 <action path="/registrarPedidoMovil" type="appmovil.rest.RegistroPedidoMovilAction"/>
 <action path="/finalizarPedidoMovil" type="appmovil.rest.UpdateRegistroPedidoMovilAction"/>
 <action path="/listarPedidoMovil" type="appmovil.rest.ListarPedidoMovilAction"/>
-
+<action path="/reubicacionMovil" type="appmovil.rest.ReubicacionMovilAction"/>
  
 <action path="/categoriaAction" type="maestro.action.categoriaAction" name="categoriaForm" input="/main.jsp?app=maestro&amp;modulo=categoria_datos" scope="request">
 <forward name="categoria_datos" path="/main.jsp?app=maestro&amp;modulo=categoria_datos" redirect="false" />

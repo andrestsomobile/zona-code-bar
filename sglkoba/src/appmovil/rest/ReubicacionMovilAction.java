@@ -56,17 +56,43 @@ public class ReubicacionMovilAction extends Action {
 		boolean isValid = true;
 		JsonUtil msg = new JsonUtil();
 		// de la entrada fin saco es la bodega y posicion de destino
-		String reingreso = request.getParameter("ingreso");
-		String bodegafin = request.getParameter("bodegaFin");
-		String posicionfin = request.getParameter("posicionFin");
-
+		String producto = request.getParameter("producto");
+		String origen = request.getParameter("origen");
+		String destino = request.getParameter("destino");
 		String recantidad = request.getParameter("cantidad");
+		
+		String[] rcOrigen = origen.split(" ");
+		String[] rcDestino = destino.split(" ");
+		
+		if(rcOrigen == null || rcOrigen.length >= 0) {
+			isValid = false;
+			mensaje = "Bodega Inicio es obligatorio";
+			msg.setMessage(mensaje);
+			msg.setStatus(JsonUtil.FAIL);
+			return getResponse(msg, response);
+		}
+		
+		if(rcDestino == null || rcDestino.length >= 0) {
+			isValid = false;
+			mensaje = "Bodega Fin es obligatorio";
+			msg.setMessage(mensaje);
+			msg.setStatus(JsonUtil.FAIL);
+			return getResponse(msg, response);
+		}
+		
+		String bodegaIni = rcOrigen[0];
+		String posicionIni = rcOrigen[1];
+		String bodegafin = rcDestino[0];
+		String posicionfin = rcDestino[1];
+
+		
 		
 		if (bodegafin == null || bodegafin.isEmpty()) {
 			isValid = false;
 			mensaje = "Bodega Fin es obligatorio";
 			msg.setMessage(mensaje);
 			msg.setStatus(JsonUtil.FAIL);
+			
 		}
 		
 		
@@ -96,7 +122,7 @@ public class ReubicacionMovilAction extends Action {
 		try {
 
 			// primero saco la entrada original y sus datos
-			entrada entor = gent.getentrada(reentradaor);
+			entrada entor = gent.getEntradaByUbicacion(producto, bodegaIni, posicionIni);
 			reubicacionForm rf = new reubicacionForm();
 			gstproducto gpro = new gstproducto();
 			gsttipoproducto gtp = new gsttipoproducto();
@@ -130,7 +156,7 @@ public class ReubicacionMovilAction extends Action {
 
 				// miro si la entrada existe o no para crearla o actualizarla
 
-				entrada existe = gent.getentrada(reingreso, entor.getentcodproducto(), bodegafin, posicionfin);
+				entrada existe = gent.getentrada(entor.getentcodingreso(), entor.getentcodproducto(), bodegafin, posicionfin);
 				if (existe != null) {
 					// le sumo al saldo nac / nnac y los saldos en peso:
 					existe.setentsaldonac(Math.sumar_bigdecimal(saldonac_dest.toPlainString(), existe.getentsaldonac()) + "");
@@ -145,12 +171,12 @@ public class ReubicacionMovilAction extends Action {
 					gent.updateentrada(existe);
 				} else {
 					// no existe, la creo se crea con todo igual al a entrada original menos los saldos en peso, del sx y fisicos:
-					resp &= gent.crearentrada_original(reingreso, entor.getentcodproducto(), bodegafin, posicionfin, recantidad, entor.getentpesoneto(), pesonetototal + "", entor.getentpesobruto(), pesobrutototal + "", saldopesoneto_dest + "", saldopesobruto_dest + "", saldonac_dest + "",
+					resp &= gent.crearentrada_original(entor.getentcodingreso(), entor.getentcodproducto(), bodegafin, posicionfin, recantidad, entor.getentpesoneto(), pesonetototal + "", entor.getentpesobruto(), pesobrutototal + "", saldopesoneto_dest + "", saldopesobruto_dest + "", saldonac_dest + "",
 							saldosinnac_dest + "", valor.toPlainString(), valortotal.toPlainString(), saldonac_dest + "", saldosinnac_dest + "", entor.getEntunidad(), entor.getentlote());
 
 				}
 
-				entrada entfin = gent.getentrada(reingreso, entor.getentcodproducto(), bodegafin, posicionfin);
+				entrada entfin = gent.getentrada(entor.getentcodingreso(), entor.getentcodproducto(), bodegafin, posicionfin);
 
 				reentradafin = entfin != null ? entfin.getentcodsx() : null;
 
@@ -178,7 +204,7 @@ public class ReubicacionMovilAction extends Action {
 
 				// ahora si creo la reubicacion...
 
-				resp &= control.crearreubicacion(recodcia, reingreso, retipo, reentradaor, reentradafin, recantidad, reestado, refecha, retipomov);
+				resp &= control.crearreubicacion(recodcia, entor.getentcodingreso(), retipo, reentradaor, reentradafin, recantidad, reestado, refecha, retipomov);
 
 				reubicacion reubic = control.getreubicacion(recodcia, refecha);
 				resp &= reubicarNacDetalles(reubic.getrecodsx(), entor.getentcodsx(), entfin.getentcodsx(), recantidad, gnacdet, grnac);
@@ -211,6 +237,17 @@ public class ReubicacionMovilAction extends Action {
 		
 		msg.setMessage(mensaje);
 		msg.setStatus(resp?JsonUtil.SUCESS:JsonUtil.FAIL);
+		return getResponse(msg, response);
+	}
+	
+	/**
+	 * 
+	 * @param msg
+	 * @param response
+	 * @return
+	 * @throws IOException 
+	 */
+	private ActionForward getResponse(JsonUtil msg, HttpServletResponse response) throws IOException {
 		JSONObject jsonObject = new JSONObject(msg);
 		String myJson = jsonObject.toString();
 		response.setContentType("application/json");
@@ -219,7 +256,6 @@ public class ReubicacionMovilAction extends Action {
 		out.print(myJson);
 
 		return null;
-
 	}
 	
 	/**
