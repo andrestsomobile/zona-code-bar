@@ -31,6 +31,11 @@ String grupo = ((usuario)session.getAttribute("usuario")).getusugrupo();
 	<tr >  <td>&nbsp;</td>
 		<td> <a href="main.jsp?app=administracion&modulo=permiso" >  :: Permisos </a> 
 <%  } %>
+
+<% if( gper.verIzquierdo(grupo, "administracion", "parametrizacion.jsp") )	{ %>
+	<tr >  <td>&nbsp;</td>
+		<td> <a href="main.jsp?app=administracion&modulo=parametrizacion" >  :: Parametros </a> 
+<%  } %>
  
 
 </table>
