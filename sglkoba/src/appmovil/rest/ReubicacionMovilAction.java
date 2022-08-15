@@ -33,9 +33,11 @@ import ingreso.entity.entrada;
 import ingreso.entity.reubicacion;
 import ingreso.entity.trafico;
 import ingreso.form.reubicacionForm;
+import maestro.control.gstbodega;
 import maestro.control.gstempleado;
 import maestro.control.gstproducto;
 import maestro.control.gsttipoproducto;
+import maestro.entity.bodega;
 import maestro.entity.empleado;
 import maestro.entity.producto;
 import maestro.entity.tipoproducto;
@@ -64,7 +66,7 @@ public class ReubicacionMovilAction extends Action {
 		String[] rcOrigen = origen.split(" ");
 		String[] rcDestino = destino.split(" ");
 		
-		if(rcOrigen == null || rcOrigen.length >= 0) {
+		if(rcOrigen == null || rcOrigen.length <= 0) {
 			isValid = false;
 			mensaje = "Bodega Inicio es obligatorio";
 			msg.setMessage(mensaje);
@@ -72,7 +74,7 @@ public class ReubicacionMovilAction extends Action {
 			return getResponse(msg, response);
 		}
 		
-		if(rcDestino == null || rcDestino.length >= 0) {
+		if(rcDestino == null || rcDestino.length <= 0) {
 			isValid = false;
 			mensaje = "Bodega Fin es obligatorio";
 			msg.setMessage(mensaje);
@@ -92,7 +94,7 @@ public class ReubicacionMovilAction extends Action {
 			mensaje = "Bodega Fin es obligatorio";
 			msg.setMessage(mensaje);
 			msg.setStatus(JsonUtil.FAIL);
-			
+			return getResponse(msg, response);
 		}
 		
 		
@@ -101,7 +103,7 @@ public class ReubicacionMovilAction extends Action {
 		String ingfecha = fecha.format(date);
 		SimpleDateFormat hora = new SimpleDateFormat("HH:mm:ss");
 		String inghora = hora.format(date);
-		String recodcia = "";
+		String recodcia = null;
 		
 		String retipo = "NACIONALIZADO";
 		String reentradaor = inghora;
@@ -118,6 +120,11 @@ public class ReubicacionMovilAction extends Action {
 		gstentrada gent = new gstentrada(db);
 		gstnacionalizacion_detalle gnacdet = new gstnacionalizacion_detalle(db);
 		gstreubic_nacdetalle grnac = new gstreubic_nacdetalle(db);
+		gstbodega gbodega = new gstbodega();
+		bodega bod = gbodega.getbodega_by_ukey(bodegafin);
+		String bodegaIdFin = bod.getbodcodsx();
+		gsttrafico gtraf = new gsttrafico();
+		
 		
 		try {
 
@@ -129,7 +136,8 @@ public class ReubicacionMovilAction extends Action {
 			producto pro = gpro.getproducto(entor.getentcodproducto());
 			tipoproducto tipopro = gtp.gettipoproducto(pro.getprotipoproducto());
 			//String miposicionfin = tipopro.gettiprcodigo() + posicionfin;
-			if (!bodegafin.equals(entor.getEntbodega()) || !posicionfin.equals(entor.getentposicion())) {
+			
+			if (!bodegaIdFin.equals(entor.getEntbodega()) || !posicionfin.equals(entor.getentposicion())) {
 
 				BigDecimal pesoneto_or = new BigDecimal(entor.getentpesoneto());
 				BigDecimal pesobruto_or = new BigDecimal(entor.getentpesobruto());
@@ -156,7 +164,7 @@ public class ReubicacionMovilAction extends Action {
 
 				// miro si la entrada existe o no para crearla o actualizarla
 
-				entrada existe = gent.getentrada(entor.getentcodingreso(), entor.getentcodproducto(), bodegafin, posicionfin);
+				entrada existe = gent.getentrada(entor.getentcodingreso(), entor.getentcodproducto(), bodegaIdFin, posicionfin);
 				if (existe != null) {
 					// le sumo al saldo nac / nnac y los saldos en peso:
 					existe.setentsaldonac(Math.sumar_bigdecimal(saldonac_dest.toPlainString(), existe.getentsaldonac()) + "");
@@ -170,16 +178,19 @@ public class ReubicacionMovilAction extends Action {
 					existe.setentcantidad(Math.sumar(recant.toPlainString(), existe.getentcantidad()));
 					gent.updateentrada(existe);
 				} else {
+					
 					// no existe, la creo se crea con todo igual al a entrada original menos los saldos en peso, del sx y fisicos:
-					resp &= gent.crearentrada_original(entor.getentcodingreso(), entor.getentcodproducto(), bodegafin, posicionfin, recantidad, entor.getentpesoneto(), pesonetototal + "", entor.getentpesobruto(), pesobrutototal + "", saldopesoneto_dest + "", saldopesobruto_dest + "", saldonac_dest + "",
+					resp &= gent.crearentrada_original(entor.getentcodingreso(), entor.getentcodproducto(), bodegaIdFin, posicionfin, recantidad, entor.getentpesoneto(), pesonetototal + "", entor.getentpesobruto(), pesobrutototal + "", saldopesoneto_dest + "", saldopesobruto_dest + "", saldonac_dest + "",
 							saldosinnac_dest + "", valor.toPlainString(), valortotal.toPlainString(), saldonac_dest + "", saldosinnac_dest + "", entor.getEntunidad(), entor.getentlote());
 
 				}
 
-				entrada entfin = gent.getentrada(entor.getentcodingreso(), entor.getentcodproducto(), bodegafin, posicionfin);
+				entrada entfin = gent.getentrada(entor.getentcodingreso(), entor.getentcodproducto(), bodegaIdFin, posicionfin);
 
 				reentradafin = entfin != null ? entfin.getentcodsx() : null;
-
+				reentradaor = entor != null ? entor.getentcodsx() : null;
+				trafico t = gtraf.getTraficoByEntrada(entor.getentcodsx());
+				recodcia = t.gettrafcompania();
 				// ahora resto saldos y pesos a la entrada original...
 				saldopesoneto_or = saldopesoneto_or.subtract(saldopesoneto_dest);
 				saldopesobruto_or = saldopesobruto_or.subtract(saldopesobruto_dest);
@@ -189,14 +200,26 @@ public class ReubicacionMovilAction extends Action {
 				// resto tambien al saldo fisico de la entrada original
 				String saldo_fisico_nac_or = util.Math.restar_bigdecimal(entor.getEntsaldonacf(), saldonac_dest.toPlainString()).toPlainString();
 				String saldo_fisico_nnac_or = util.Math.restar_bigdecimal(entor.getEntsaldosinnacf(), saldosinnac_dest.toPlainString()).toPlainString();
-
+				
+				if(saldonac_or.longValue() < 0) {
+					saldonac_or = BigDecimal.ZERO;
+				}
+				
+				if(Double.parseDouble(saldo_fisico_nac_or) < 0.0) {
+					saldo_fisico_nac_or = "0.0";
+				}
+				
+				if(Double.parseDouble(saldo_fisico_nac_or) < 0.0) {
+					saldo_fisico_nac_or = "0.0";
+				}
+				
 				entor.setentsaldopesoneto(saldopesoneto_or + "");
 				entor.setentsaldopesobruto(saldopesobruto_or + "");
 				entor.setentsaldonac(saldonac_or + "");
 				entor.setentsaldosinnac(saldosinnac_or + "");
 				entor.setEntsaldonacf(saldo_fisico_nac_or);
 				entor.setEntsaldosinnacf(saldo_fisico_nnac_or);
-				// resto a la entrada original la cantidad de la reubicacion para mover siempre la cantidad tambien
+				// resto a la entrada original lab cantidad de la reubicacion para mover siempre la cantidad tambien
 				entor.setentcantidad(Math.restar_bigdecimal(entor.getentcantidad(), recant.toPlainString()).toPlainString());
 				// LOS PESOS TOTALES DE LA ENTRAA ORIGINAL NO SE RESTAN, SOLO LOS SALDOS!!!(en pesos y cant)
 
@@ -225,15 +248,19 @@ public class ReubicacionMovilAction extends Action {
 
 			rf.setPosicionfin(posicionfin);
 
+		
+		
+		System.out.print("" + resp);
+		if (resp)
+			db.commit();
+		else
+			db.rollback();
+		
 		} catch (Exception e) {
 			e.printStackTrace();
 			mensaje = "No se pudo Crear el reubicacion: <br> " + e.getLocalizedMessage();
 			resp = false;
 		}
-		if (resp)
-			db.commit();
-		else
-			db.rollback();
 		
 		msg.setMessage(mensaje);
 		msg.setStatus(resp?JsonUtil.SUCESS:JsonUtil.FAIL);
