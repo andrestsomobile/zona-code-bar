@@ -23,12 +23,11 @@ private String tipo_elemento;
  public void setopcion(String newopcion) { this.opcion = newopcion; }
  public String getopcion() { return this.opcion; }
  
-
-public String getnombre() {
-return nombre;
-}
 public String getpk_parametro() {
 return pk_parametro;
+}
+public String getnombre() {
+return nombre;
 }
 public String getdescripcion() {
 return descripcion;
@@ -44,11 +43,11 @@ return tipo_elemento;
 }
 
 
-public void setnombre(String new_nombre) {
-this.nombre =  new_nombre;
-}
 public void setpk_parametro(String new_pk_parametro) {
 this.pk_parametro =  new_pk_parametro;
+}
+public void setnombre(String new_nombre) {
+this.nombre =  new_nombre;
 }
 public void setdescripcion(String new_descripcion) {
 this.descripcion =  new_descripcion;
@@ -73,19 +72,19 @@ ActionErrors errors = new ActionErrors();
  
  if(opcion.equals("crear")   ) { 
 	 
-	 parametro parametro = gparametro.getpk_parametro(pk_parametro);
-	 if(parametro!=null) {
-		 	errors.add("general", new ActionMessage("El usuario con login <b>" + pk_parametro + "</b> ya existe, no pueden existir 2 logins iguales en la aplicacion", false));
+	 parametro parame = gparametro.getpk_parametro(pk_parametro);
+	 if(parame!=null) {
+		 	errors.add("general", new ActionMessage("El parametro <b>" + pk_parametro + "</b> ya existe, no pueden existir 2 parametros iguales en la aplicacion", false));
 		 	return errors;
 	 }
 } 
 
  
 //valido campos requeridos:
-
-   if(nombre.equals("")) errors.add("nombre", new ActionMessage("El Nombre no puede ser vacio", false) );    
-   if(valor.equals("")) errors.add("valor", new ActionMessage("El valor no puede ser vacio", false) );  
    if(pk_parametro.equals("")) errors.add("pk_parametro", new ActionMessage("El parametro no puede ser vacio", false) ); 
+   if(nombre.equals("")) errors.add("nombre", new ActionMessage("El Nombre no puede ser vacio", false) ); 
+   if(descripcion.equals("")) errors.add("descripcion", new ActionMessage("La descripcion no puede ser vacio", false) );  
+   if(valor.equals("")) errors.add("valor", new ActionMessage("El valor no puede ser vacio", false) );  
    if(ubicacion.equals("")) errors.add("ubicacion", new ActionMessage("La ubicacion no puede ser vacio", false) );
    if(tipo_elemento.equals("")) errors.add("tipo_elemento", new ActionMessage("El tipo de elemento no puede ser vacio", false) ); 
    
@@ -99,11 +98,10 @@ ActionErrors errors = new ActionErrors();
  public void llenar (parametro entity ) { 
  
 
-
+this.pk_parametro =  entity.getpk_parametro();
 this.nombre =  entity.getnombre(); 
 this.descripcion =  entity.getdescripcion(); 
-this.valor =  entity.getvalor(); 
-this.pk_parametro =  entity.getpk_parametro(); 
+this.valor =  entity.getvalor();  
 this.ubicacion =  entity.getubicacion(); 
 this.tipo_elemento = entity.gettipo_elemento();
 

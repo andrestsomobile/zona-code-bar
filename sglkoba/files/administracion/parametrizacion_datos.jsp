@@ -32,7 +32,7 @@
 		
 <%
 administracion.form.parametroForm parametroform = (administracion.form.parametroForm)request.getAttribute("parametroForm");
-gstcliente gcli = new gstcliente();
+gstparametro gpar = new gstparametro();
 
 gstparametro ggr = new gstparametro();
 %>		
@@ -45,8 +45,7 @@ gstparametro ggr = new gstparametro();
 		<html:hidden property="opcion" styleId="opcion"/> 
 		<table align="center" border="0" width='90%' cellpadding="3" cellspacing="0" class="tabla_datos"> 
 			<tr> 
-				<td colspan="2"> Digite los datos de un usuario, debe ingresar el nombre, login, clave, mail (no obligatorio) , 
-				grupo al que pertenece  y compania  a la que pertenece. 
+				<td colspan="2"> Digite los registros de un parametro, debe ingresar el nombre, descripcion (no obligatorio), valor, ubicacion (no obligatorio) y tipo de elemento(no obligatorio)
 			<tr> 
 				<td>Codigo del parametro
 				<td><html:text property="pk_parametro"  readonly="true" styleClass="readonly"  /> (Asignado por el Sx - No Editable)
@@ -63,12 +62,12 @@ gstparametro ggr = new gstparametro();
 			<tr> 
 				
 				<td>Ubicacion
-				<td><html:select property="ubicacion"> <html:errors property="ubicacion"/> </html:select>
+				<td><html:text property="ubicacion"> <html:errors property="ubicacion"/> </html:text>
 				
 			<tr> 
 				
 				<td>Tipo de elemento
-				<td><html:select property="tipo_elemento" > <html:errors property="Tipo_elemento"/> </html:select>
+				<td><html:text property="tipo_elemento" > <html:errors property="tipo_elemento"/> </html:text>
 			
 			<tr>
 			

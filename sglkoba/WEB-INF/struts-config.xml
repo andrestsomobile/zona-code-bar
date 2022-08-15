@@ -15,6 +15,7 @@
 <form-bean name="zonaForm" type="maestro.form.zonaForm" />
 <form-bean name="transportadoraForm" type="maestro.form.transportadoraForm" />
 <form-bean name="usuarioForm" type="administracion.form.usuarioForm" />
+<form-bean name="parametroForm" type="administracion.form.parametroForm" />
 <form-bean name="empleadoForm" type="maestro.form.empleadoForm" />
 <form-bean name="bodegaForm" type="maestro.form.bodegaForm" />
 <form-bean name="empresaForm" type="administracion.form.empresaForm" />
@@ -202,6 +203,10 @@
 <action path="/usuarioAction" type="administracion.action.usuarioAction" name="usuarioForm" input="/main.jsp?app=administracion&amp;modulo=usuario_datos" scope="request">
 <forward name="usuario_datos" path="/main.jsp?app=administracion&amp;modulo=usuario_datos" redirect="false" />
 <forward name="usuario" path="/main.jsp?app=administracion&amp;modulo=usuario" redirect="false" />
+</action>
+<action path="/parametroAction" type="administracion.action.parametroAction" name="parametroForm" input="/main.jsp?app=administracion&amp;modulo=parametrizacion_datos" scope="request">
+<forward name="parametrizacion_datos" path="/main.jsp?app=administracion&amp;modulo=parametrizacion_datos" redirect="false" />
+<forward name="parametrizacion" path="/main.jsp?app=administracion&amp;modulo=parametrizacion" redirect="false" />
 </action>
 <action path="/empleadoAction" type="maestro.action.empleadoAction" name="empleadoForm" input="/main.jsp?app=maestro&amp;modulo=empleado_datos" scope="request">
 <forward name="empleado_datos" path="/main.jsp?app=maestro&amp;modulo=empleado_datos" redirect="false" />
