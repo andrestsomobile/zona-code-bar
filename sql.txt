@@ -3,3 +3,15 @@ alter table public.usuario add usucedula character varying
 alter table movimiento.ingreso add ingusuario character varying 
 
 alter table public.registro_pedido_detalle add rpnovedad character varying
+
+
+create sequence posicion_estanteria_pk_seq;
+
+CREATE TABLE IF NOT EXISTS posicion_estanteria
+(
+    pk_posicion_estanteria integer NOT NULL DEFAULT nextval('posicion_estanteria_pk_seq'::regclass),
+    bodega character varying(200) NOT NULL,
+    posicion character varying(500) NOT NULL,
+    CONSTRAINT posicion_estanteria_pk PRIMARY KEY (pk_posicion_estanteria)
+);
+
