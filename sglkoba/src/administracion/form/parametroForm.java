@@ -81,7 +81,7 @@ ActionErrors errors = new ActionErrors();
 
  
 //valido campos requeridos:
-   if(pk_parametro.equals("")) errors.add("pk_parametro", new ActionMessage("El parametro no puede ser vacio", false) ); 
+   
    if(nombre.equals("")) errors.add("nombre", new ActionMessage("El Nombre no puede ser vacio", false) ); 
    if(descripcion.equals("")) errors.add("descripcion", new ActionMessage("La descripcion no puede ser vacio", false) );  
    if(valor.equals("")) errors.add("valor", new ActionMessage("El valor no puede ser vacio", false) );  
