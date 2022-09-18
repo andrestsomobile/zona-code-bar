@@ -25,6 +25,7 @@ import ingreso.entity.ingreso;
 import ingreso.entity.trafico;
 import ingreso.form.ingresoForm;
 import maestro.control.gstbodega;
+import maestro.control.gstproducto;
 import util.JsonUtil;
 
 public class EntradaMovilAction extends Action {
@@ -44,8 +45,16 @@ public class EntradaMovilAction extends Action {
 		
 		if(ubicacion != null && !ubicacion.isEmpty()) {
 			String[] strUbicacion = ubicacion.split(" ");
-			bodega = strUbicacion[0];
-			ubicacion = strUbicacion[1];
+			
+			if(strUbicacion.length < 0) {
+				isValid = false;
+				mensaje = "La ubicacion no es correcta, debe ser BODEGA POSICION";
+				msg.setMessage(mensaje);
+				msg.setStatus(JsonUtil.SUCESS);
+			} else {
+				bodega = strUbicacion[0];
+				ubicacion = strUbicacion[1];
+			}
 		} else {
 			isValid = false;
 			mensaje = "La ubicacion es obligatoria";
@@ -96,14 +105,25 @@ public class EntradaMovilAction extends Action {
 			if (ing != null && ing.getingtipo().equalsIgnoreCase("TRAFICO")) {
 				mensaje = "Entrada creada exitosamente";
 				gstbodega gsbodega = new gstbodega();
-				maestro.entity.bodega bod = gsbodega.getbodega_by_ukey(bodega);
-				
-				if(bod == null) {
+				gstproducto gsproducto = new gstproducto();
+				Collection prtrafico = gsproducto.getProductoByTrafico(codigoBarra, trafico);
+				maestro.entity.bodega bod = null;
+				if(prtrafico == null || prtrafico.isEmpty()) {
 					isValid = false;
-					mensaje = "No existe la bodega " + bodega;
+					mensaje = "Referencia no Existe";
 					msg.setMessage(mensaje);
 					msg.setStatus(JsonUtil.FAIL);
+				} else {
+					bod = gsbodega.getbodega_by_ukey(bodega);
+					
+					if(bod == null) {
+						isValid = false;
+						mensaje = "No existe la bodega " + bodega;
+						msg.setMessage(mensaje);
+						msg.setStatus(JsonUtil.FAIL);
+					}
 				}
+				
 				
 				if(isValid)
 					control.crearEntradasTraficoMovil(codigoBarra,ing.getingcodsx(), ing.getingtrafico(), bod.getbodcodsx(), ubicacion,cantidad);
