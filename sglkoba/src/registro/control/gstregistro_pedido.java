@@ -168,10 +168,10 @@ public class gstregistro_pedido extends GstTabla
     public String Getrepecodsx()
     {
         String cad = "";
-        cad = "SELECT max(repecodsx) FROM registro_pedido";
+        cad = "SELECT max(repecodsx)+1 FROM registro_pedido";
         System.out.print(cad);
         String resp = getCampo(cad);
-        return resp == null ? "0" : resp;
+        return resp == null ? "1" : resp;
     }
 
     public Collection getregistro_pedidos(String fechain, String fechafin)

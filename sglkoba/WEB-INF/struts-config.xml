@@ -150,6 +150,15 @@
   	<forward name="index_movil" path="/index_movil.jsp" redirect="false" />
 </action>
 
+<action path="/validarUsuarioMovil" type="appmovil.rest.UsuarioMovilAction"/>
+<action path="/getTraficoMovil" type="appmovil.rest.TraficoMovilAction"/>
+<action path="/entradaMovil" type="appmovil.rest.EntradaMovilAction"/>
+<action path="/finalizarIngresoMovil" type="appmovil.rest.FinalizarIngresoMovilAction"/>
+<action path="/registrarPedidoMovil" type="appmovil.rest.RegistroPedidoMovilAction"/>
+<action path="/finalizarPedidoMovil" type="appmovil.rest.UpdateRegistroPedidoMovilAction"/>
+<action path="/listarPedidoMovil" type="appmovil.rest.ListarPedidoMovilAction"/>
+<action path="/reubicacionMovil" type="appmovil.rest.ReubicacionMovilAction"/>
+<action path="/listarEstanteriaMovil" type="appmovil.rest.PosicionamientoEstanteriaMovilAction"/>
  
 <action path="/categoriaAction" type="maestro.action.categoriaAction" name="categoriaForm" input="/main.jsp?app=maestro&amp;modulo=categoria_datos" scope="request">
 <forward name="categoria_datos" path="/main.jsp?app=maestro&amp;modulo=categoria_datos" redirect="false" />
