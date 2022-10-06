@@ -67,10 +67,29 @@ public class RegistroPedidoMovilAction extends Action {
 				String[] rcPedido = pedidos.split(",");
 				gstusuario gusu = new gstusuario();
 				usuario user = gusu.getusuario_by_login(usuario);
+				
+				if(user == null) {
+					isValid = false;
+					mensaje = "No existe el usuario con login " + usuario;
+					msg.setMessage(mensaje);
+					msg.setStatus(JsonUtil.FAIL);
+					sendMessage(msg, response);
+
+					return null;
+				}
 				String cedula = user.getusucedula();
 				
 				gstempleado gemp = new gstempleado();
 				empleado emp = gemp.getempleado_by_ukey(cedula);
+				
+				if(emp == null) {
+					isValid = false;
+					mensaje = "No existe el empleado con login " + usuario;
+					msg.setMessage(mensaje);
+					msg.setStatus(JsonUtil.FAIL);
+					sendMessage(msg, response);
+					return null;
+				}
 				
 				
 				gstregistro_pedido grpedido = new gstregistro_pedido();
@@ -83,7 +102,16 @@ public class RegistroPedidoMovilAction extends Action {
 						gstpedido gstpedido = new gstpedido();
 						pedido ped = gstpedido.getpedidoByNumPedidoDate(p, ingfecha);
 						gstregistro_pedido_detalle grdpedido = new gstregistro_pedido_detalle();
-						grdpedido.crearregistro_pedido_detalle(grdpedido.Getrpdecodsx(), idPedido, ped.getpedcodsx(), inghora, "N");
+						
+						if(ped == null) {
+							isValid = false;
+							mensaje = "Pedido no existe, verifique que el nro del pedido exista ";
+							msg.setMessage(mensaje);
+							msg.setStatus(JsonUtil.FAIL);
+						} else {
+							grdpedido.crearregistro_pedido_detalle(grdpedido.Getrpdecodsx(), idPedido, ped.getpedcodsx(), inghora, "N");
+						}
+						
 					}
 				} else {
 					isValid = false;
@@ -119,4 +147,16 @@ public class RegistroPedidoMovilAction extends Action {
 		return null;
 
 	}
+	
+	public Object sendMessage(JsonUtil msg, HttpServletResponse response) throws IOException {
+		JSONObject jsonObject = new JSONObject(msg);
+		String myJson = jsonObject.toString();
+		response.setContentType("application/json");
+		// response.setCharacterEncoding("UTF-8");
+		PrintWriter out = response.getWriter();
+		out.print(myJson);
+		
+		return null;
+	}
 }
+
