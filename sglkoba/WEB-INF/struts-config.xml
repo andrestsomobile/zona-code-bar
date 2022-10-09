@@ -159,6 +159,8 @@
 <action path="/listarPedidoMovil" type="appmovil.rest.ListarPedidoMovilAction"/>
 <action path="/reubicacionMovil" type="appmovil.rest.ReubicacionMovilAction"/>
 <action path="/listarEstanteriaMovil" type="appmovil.rest.PosicionamientoEstanteriaMovilAction"/>
+<action path="/listarInventarioMovil" type="appmovil.rest.ListarInventarioMovilAction"/>
+<action path="/crearInventarioMovil" type="appmovil.rest.CrearInventarioMovilAction"/>
  
 <action path="/categoriaAction" type="maestro.action.categoriaAction" name="categoriaForm" input="/main.jsp?app=maestro&amp;modulo=categoria_datos" scope="request">
 <forward name="categoria_datos" path="/main.jsp?app=maestro&amp;modulo=categoria_datos" redirect="false" />

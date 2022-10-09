@@ -15,3 +15,21 @@ CREATE TABLE IF NOT EXISTS posicion_estanteria
     CONSTRAINT posicion_estanteria_pk PRIMARY KEY (pk_posicion_estanteria)
 );
 
+CREATE TABLE IF NOT EXISTS public.inventario
+(
+    invcodsx integer NOT NULL,
+    Invfecha date NOT NULL DEFAULT now(),
+    Invconteo integer NOT NULL,
+    Invterminal character varying NOT NULL,
+    Invusuario character varying NOT NULL,
+    Invbodega integer NOT NULL,
+    Invposicion character varying NOT NULL,
+    Invreferencia character varying NOT NULL,
+    Invproducto integer NOT NULL,
+    invgrupoid integer NOT NULL,
+    CONSTRAINT pk_inventario PRIMARY KEY (invcodsx),
+    CONSTRAINT fk_invbodega FOREIGN KEY (invbodega)
+        REFERENCES public.bodega (bodcodsx),
+	CONSTRAINT fk_invproducto FOREIGN KEY (invproducto)
+        REFERENCES public.producto (procodsx) 
+);
