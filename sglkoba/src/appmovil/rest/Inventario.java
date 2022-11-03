@@ -11,10 +11,11 @@ public class Inventario {
 	private String invreferencia;
 	private String invproducto;
 	private String invgrupoid;
+	private String invinventariopadre;
 	
 	
 	public Inventario(String invcodsx, String invfecha, String invconteo, String invterminal, String invusuario, String invbodega, 
-			String invposicion, String invreferencia, String invproducto, String invgrupoid) {
+			String invposicion, String invreferencia, String invproducto, String invgrupoid, String invinventariopadre) {
 		this.invcodsx = invcodsx;
 		this.invfecha = invfecha;
 		this.invconteo = invconteo;
@@ -25,8 +26,23 @@ public class Inventario {
 		this.invreferencia = invreferencia;
 		this.invproducto = invproducto;
 		this.invgrupoid = invgrupoid;
+		this.invinventariopadre = invinventariopadre;
 	}
 	
+	
+	
+	public String getInvinventariopadre() {
+		return invinventariopadre;
+	}
+
+
+
+	public void setInvinventariopadre(String invinventariopadre) {
+		this.invinventariopadre = invinventariopadre;
+	}
+
+
+
 	public Inventario(String invcodsx) {
 		this.invcodsx = invcodsx;
 	}

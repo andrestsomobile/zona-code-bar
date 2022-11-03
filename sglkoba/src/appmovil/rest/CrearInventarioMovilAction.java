@@ -34,7 +34,7 @@ public class CrearInventarioMovilAction extends Action {
 		GstInventario control = new GstInventario();
 		Date date = new Date();
 		SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd");
-		String codigoInventario = request.getParameter("codigoInventario");
+		String codigoInventario = request.getParameter("id");
 		String conteo = request.getParameter("conteo");
 		String terminal = request.getParameter("terminal");
 		String usuario = request.getParameter("usuario");
@@ -80,10 +80,12 @@ public class CrearInventarioMovilAction extends Action {
 				
 				String[] rcReferencia = referencia.split(",");
 				String[] rcUbicacion = ubicacion.split(",");
+				String[] rcConteo = conteo.split(",");
 				int i = 0;
 				String location = "";
 				int grupoId = control.getGrupoId();
 				for(String ref: rcReferencia) {
+					String strConteo = rcConteo[i];
 					String[] strUbicacion = rcUbicacion[i].split(" ");
 					
 					if(strUbicacion.length < 0) {
@@ -119,13 +121,9 @@ public class CrearInventarioMovilAction extends Action {
 						
 						if(isValid) {
 							boolean isSucessfull = false;
-							if(codigoInventario == null || codigoInventario.isEmpty()) {
-								isSucessfull = control.crear(conteo, terminal, usuario, bod.getbodcodsx(), location, ref, 
-										p.getprocodsx(), ingfecha, grupoId);
-							} else {
-								isSucessfull = control.update(codigoInventario, conteo, terminal, usuario, bod.getbodcodsx(), location, ref, 
-										p.getprocodsx(), ingfecha, grupoId);
-							}
+								isSucessfull = control.crear(strConteo, terminal, usuario, bod.getbodcodsx(), location, ref, 
+										p.getprocodsx(), ingfecha, grupoId, codigoInventario);
+							
 							
 							if(isSucessfull) {
 								mensaje = "Inventario guardado exitosamente";

@@ -35,9 +35,17 @@ public class ListarInventarioMovilAction extends Action {
 		JsonUtil msg = new JsonUtil();
 		
 		try {			
+			Collection traficoListDB = control.getAll();
+			InventarioResponse temp = null;
+			List<InventarioResponse> traficoList = new ArrayList<InventarioResponse>();
+			for(Object obj: traficoListDB) {
+				Inventario t = (Inventario) obj;
+				temp = new InventarioResponse(t.getInvcodsx(), t.getInvcodsx() + " " + t.getInvfecha());
+				traficoList.add(temp);
+			}
 			msg.setMessage(mensaje);
 			msg.setStatus(JsonUtil.SUCESS);
-			msg.setData(control.getAll());
+			msg.setData(traficoList);
 		} catch (Exception e) {
 			e.printStackTrace();
 			mensaje = "No se pudo listar el inventario: <br> " + e.getLocalizedMessage();

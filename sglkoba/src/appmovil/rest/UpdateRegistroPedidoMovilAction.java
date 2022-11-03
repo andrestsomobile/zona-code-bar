@@ -39,6 +39,8 @@ public class UpdateRegistroPedidoMovilAction extends Action {
 		String idRegistroPedido = request.getParameter("registroPedido");
 		String pedido = request.getParameter("pedido");
 		String novedad = request.getParameter("novedad");
+		String producto = request.getParameter("producto");
+		String posicion = request.getParameter("posicion");
 		
 		if (pedido == null || pedido.isEmpty()) {
 			isValid = false;
@@ -64,10 +66,13 @@ public class UpdateRegistroPedidoMovilAction extends Action {
 					gstpedido gstpedido = new gstpedido();
 					pedido ped = gstpedido.getpedidoByNumPedidoDate(pedido, ingfecha);
 					gstregistro_pedido_detalle grdpedido = new gstregistro_pedido_detalle();
-					registro_pedido_detalle rdpedido = grdpedido.getregistro_pedido_detalle_numpedido(rpedido.getrepecodsx(), ped.getpedcodsx());
+					registro_pedido_detalle rdpedido = grdpedido.getregistro_pedido_detalle_numpedido(rpedido.getrepecodsx(), ped.getpedcodsx(),
+							producto, posicion);
 					rdpedido.setrpnovedad(novedad);
 					rdpedido.setrpdeterminado("S");
 					rdpedido.setrpdetire(inghora);
+					rdpedido.setRpdeproducto(producto);
+					rdpedido.setRpdeposicion(posicion);
 					boolean edito = grdpedido.updateregistro_pedido_detalle(rdpedido);
 					
 					if(edito) {
@@ -84,7 +89,7 @@ public class UpdateRegistroPedidoMovilAction extends Action {
 								msg.setMessage(mensaje);
 								msg.setStatus(JsonUtil.FAIL);
 							} else {
-								mensaje = "Registro finalizado correctamente";
+								mensaje = "Registro completado correctamente";
 								msg.setMessage(mensaje);
 								msg.setStatus(JsonUtil.SUCESS);
 							}

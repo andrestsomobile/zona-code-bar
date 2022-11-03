@@ -32,6 +32,7 @@ import pedido.entity.pedido;
 import pedido.entity.referencia_pedido;
 import registro.control.gstregistro_pedido;
 import registro.control.gstregistro_pedido_detalle;
+import registro.entity.registro_pedido;
 import util.JsonUtil;
 
 public class RegistroPedidoMovilAction extends Action {
@@ -42,14 +43,14 @@ public class RegistroPedidoMovilAction extends Action {
 		String pedidos = request.getParameter("pedidos");
 		String usuario = request.getParameter("usuario");
 		String idPedido = "";
-		
+
 		if (pedidos == null || pedidos.isEmpty()) {
 			isValid = false;
 			mensaje = "Pedido es obligatorio";
 			msg.setMessage(mensaje);
 			msg.setStatus(JsonUtil.FAIL);
 		}
-		
+
 		if (usuario == null || usuario.isEmpty()) {
 			isValid = false;
 			mensaje = "Usuario es obligatorio";
@@ -67,8 +68,8 @@ public class RegistroPedidoMovilAction extends Action {
 				String[] rcPedido = pedidos.split(",");
 				gstusuario gusu = new gstusuario();
 				usuario user = gusu.getusuario_by_login(usuario);
-				
-				if(user == null) {
+
+				if (user == null) {
 					isValid = false;
 					mensaje = "No existe el usuario con login " + usuario;
 					msg.setMessage(mensaje);
@@ -78,11 +79,11 @@ public class RegistroPedidoMovilAction extends Action {
 					return null;
 				}
 				String cedula = user.getusucedula();
-				
+
 				gstempleado gemp = new gstempleado();
 				empleado emp = gemp.getempleado_by_ukey(cedula);
-				
-				if(emp == null) {
+
+				if (emp == null) {
 					isValid = false;
 					mensaje = "No existe el empleado con login " + usuario;
 					msg.setMessage(mensaje);
@@ -90,37 +91,48 @@ public class RegistroPedidoMovilAction extends Action {
 					sendMessage(msg, response);
 					return null;
 				}
-				
-				
+
 				gstregistro_pedido grpedido = new gstregistro_pedido();
 				idPedido = grpedido.Getrepecodsx();
-				boolean creoPedido = grpedido.crearregistro_pedido(idPedido, ingfecha, emp.getempcodsx(), inghora, inghora, 
-						"0", "TRAMITE");
-				
-				if(creoPedido) {
-					for(String p: rcPedido) {
-						gstpedido gstpedido = new gstpedido();
-						pedido ped = gstpedido.getpedidoByNumPedidoDate(p, ingfecha);
-						gstregistro_pedido_detalle grdpedido = new gstregistro_pedido_detalle();
-						
-						if(ped == null) {
+
+				for (String p : rcPedido) {
+
+					registro_pedido rp = grpedido.getRegistroPedidoByPedido(p);
+
+					if (rp == null) {
+						boolean creoPedido = grpedido.crearregistro_pedido(idPedido, ingfecha, emp.getempcodsx(), inghora, inghora, "0", "TRAMITE");
+
+						if (!creoPedido) {
 							isValid = false;
-							mensaje = "Pedido no existe, verifique que el nro del pedido exista ";
+							mensaje = "No se pudo crear el registro del pedido ";
 							msg.setMessage(mensaje);
 							msg.setStatus(JsonUtil.FAIL);
+							idPedido = "0";
 						} else {
-							grdpedido.crearregistro_pedido_detalle(grdpedido.Getrpdecodsx(), idPedido, ped.getpedcodsx(), inghora, "N");
+							gstreferencia_pedido gstrpedido = new gstreferencia_pedido();
+							Collection listPed = gstrpedido.getReferenciaByNumPedido(p);
+
+							gstregistro_pedido_detalle grdpedido = new gstregistro_pedido_detalle();
+
+							if (listPed == null || listPed.isEmpty()) {
+								isValid = false;
+								mensaje = "Pedido no existe, verifique que el nro del pedido exista ";
+								msg.setMessage(mensaje);
+								msg.setStatus(JsonUtil.FAIL);
+							} else {
+								for (Object obj : listPed) {
+									referencia_pedido r = (referencia_pedido) obj;
+									grdpedido.crearregistro_pedido_detalle(grdpedido.Getrpdecodsx(), idPedido, r.getRefpnumpedido(), inghora, "N", r.getRefpproducto(), r.getrefpposicion());
+								}
+							}
 						}
-						
+					} else {
+						idPedido = rp.getrepecodsx();
 					}
-				} else {
-					isValid = false;
-					mensaje = "No se pudo crear el registro del pedido ";
-					msg.setMessage(mensaje);
-					msg.setStatus(JsonUtil.FAIL);
+
+					
 				}
 			}
-
 		} catch (SQLException e) {
 			isValid = false;
 			e.printStackTrace();
@@ -129,14 +141,14 @@ public class RegistroPedidoMovilAction extends Action {
 			msg.setStatus(JsonUtil.FAIL);
 		}
 
-		if(isValid) {
+		if (isValid) {
 			RegistroPedidoResponseDTO responsePedido = new RegistroPedidoResponseDTO();
-			responsePedido.setIdRegistroPedido(idPedido);			
+			responsePedido.setIdRegistroPedido(idPedido);
 			msg.setMessage("Pedido registrado exitosamente");
 			msg.setData(responsePedido);
 			msg.setStatus(JsonUtil.SUCESS);
 		}
-		
+
 		JSONObject jsonObject = new JSONObject(msg);
 		String myJson = jsonObject.toString();
 		response.setContentType("application/json");
@@ -147,7 +159,7 @@ public class RegistroPedidoMovilAction extends Action {
 		return null;
 
 	}
-	
+
 	public Object sendMessage(JsonUtil msg, HttpServletResponse response) throws IOException {
 		JSONObject jsonObject = new JSONObject(msg);
 		String myJson = jsonObject.toString();
@@ -155,8 +167,7 @@ public class RegistroPedidoMovilAction extends Action {
 		// response.setCharacterEncoding("UTF-8");
 		PrintWriter out = response.getWriter();
 		out.print(myJson);
-		
+
 		return null;
 	}
 }
-

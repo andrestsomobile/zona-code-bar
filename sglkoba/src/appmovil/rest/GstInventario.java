@@ -18,7 +18,7 @@ public class GstInventario extends GstTabla{
 		}
 
 		public Collection getAll() {
-			String consulta = " SELECT * FROM inventario";
+			String consulta = "SELECT * FROM inventario";
 			return getLista(consulta);
 		}
 		
@@ -28,22 +28,15 @@ public class GstInventario extends GstTabla{
 		}
 
 		public boolean crear(String conteo, String terminal, String usuario, String bodega, String posicion, String referencia, 
-				String producto, String fecha, int grupoId) throws SQLException {
+				String producto, String fecha, int grupoId, String codigoInventario) throws SQLException {
 			String insert = "INSERT INTO inventario( "
-					+ "	invcodsx, invconteo, invterminal, invusuario, invbodega, invposicion, invreferencia, invproducto, invfecha, invgrupoid) "
+					+ "	invcodsx, invconteo, invterminal, invusuario, invbodega, invposicion, invreferencia, invproducto, invfecha, invgrupoid, invinventariopadre) "
 					+ "	VALUES (" + getId() + ", " + conteo + ", '" + terminal + "', '" + usuario + "', " + bodega + ", '" + posicion + 
-					"', '" + referencia + "', " + producto + ", '" + fecha + "'" + ", " + grupoId + ")";
+					"', '" + referencia + "', " + producto + ", '" + fecha + "'" + ", " + grupoId + "," + codigoInventario + ")";
 			
-			Inventario inv = getByReferenceAndGroup(referencia, grupoId);
-			int resp = 0;
-			if(inv != null) {
-				int cont = Integer.parseInt(inv.getInvconteo()) + 1;
-				return update(inv.getInvcodsx(), cont+"", terminal, usuario, bodega, posicion, referencia, producto, fecha, grupoId);
-			} else {
-				resp = db.executeUpdate(insert);
+			
+				int resp = db.executeUpdate(insert);
 				System.out.println(insert);
-			}
-			
 			
 			return resp == 0 ? false : true;
 		}
@@ -69,6 +62,9 @@ public class GstInventario extends GstTabla{
 			if(i == null) {
 				return 1;
 			} else {
+				if(i.getInvcodsx() == null) {
+					return 1;
+				}
 				return Integer.parseInt(i.getInvcodsx());
 			}
 		}
@@ -80,6 +76,9 @@ public class GstInventario extends GstTabla{
 			if(i == null) {
 				return 1;
 			} else {
+				if(i.getInvcodsx() == null) {
+					return 1;
+				}
 				return Integer.parseInt(i.getInvcodsx());
 			}
 		}
