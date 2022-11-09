@@ -25,9 +25,9 @@ CREATE TABLE IF NOT EXISTS public.inventario
     Invbodega integer NOT NULL,
     Invposicion character varying NOT NULL,
     Invreferencia character varying NOT NULL,
-    Invproducto integer NOT NULL,
+    Invproducto integer NULL,
     invgrupoid integer NOT NULL,
-    invinventariopadre integer NOT NULL,
+    invinventariopadre integer NULL,
     CONSTRAINT pk_inventario PRIMARY KEY (invcodsx),
     CONSTRAINT fk_invbodega FOREIGN KEY (invbodega)
         REFERENCES public.bodega (bodcodsx),

@@ -81,11 +81,13 @@ public class CrearInventarioMovilAction extends Action {
 				String[] rcReferencia = referencia.split(",");
 				String[] rcUbicacion = ubicacion.split(",");
 				String[] rcConteo = conteo.split(",");
+				String[] rcInventarioId = codigoInventario.split(",");
 				int i = 0;
 				String location = "";
 				int grupoId = control.getGrupoId();
 				for(String ref: rcReferencia) {
 					String strConteo = rcConteo[i];
+					String strId = rcInventarioId[i];
 					String[] strUbicacion = rcUbicacion[i].split(" ");
 					
 					if(strUbicacion.length < 0) {
@@ -111,18 +113,15 @@ public class CrearInventarioMovilAction extends Action {
 						
 						gstproducto gstproducto = new gstproducto();
 						producto p = gstproducto.getProductoByCodBarra(ref);
-						
-						if(p == null) {
-							isValid = false;
-							mensaje = "No existe el producto " + referencia;
-							msg.setMessage(mensaje);
-							msg.setStatus(JsonUtil.FAIL);
+						String productoId = "null";
+						if(p != null) {
+							productoId = p.getprocodsx();
 						}
 						
 						if(isValid) {
 							boolean isSucessfull = false;
 								isSucessfull = control.crear(strConteo, terminal, usuario, bod.getbodcodsx(), location, ref, 
-										p.getprocodsx(), ingfecha, grupoId, codigoInventario);
+										productoId, ingfecha, grupoId, strId);
 							
 							
 							if(isSucessfull) {
