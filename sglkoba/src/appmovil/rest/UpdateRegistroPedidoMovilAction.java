@@ -68,37 +68,47 @@ public class UpdateRegistroPedidoMovilAction extends Action {
 					gstregistro_pedido_detalle grdpedido = new gstregistro_pedido_detalle();
 					registro_pedido_detalle rdpedido = grdpedido.getregistro_pedido_detalle_numpedido(rpedido.getrepecodsx(), ped.getpedcodsx(),
 							producto, posicion);
-					rdpedido.setrpnovedad(novedad);
-					rdpedido.setrpdeterminado("S");
-					rdpedido.setrpdetire(inghora);
-					rdpedido.setRpdeproducto(producto);
-					rdpedido.setRpdeposicion(posicion);
-					boolean edito = grdpedido.updateregistro_pedido_detalle(rdpedido);
 					
-					if(edito) {
-						int countPendiente = grdpedido.getregistro_pedido_detalle_pendiente(rpedido.getrepecodsx());
+					if(rdpedido != null) {
+						rdpedido.setrpnovedad(novedad);
+						rdpedido.setrpdeterminado("S");
+						rdpedido.setrpdetire(inghora);
+						rdpedido.setRpdeproducto(producto);
+						rdpedido.setRpdeposicion(posicion);
+						boolean edito = grdpedido.updateregistro_pedido_detalle(rdpedido);
 						
-						if(countPendiente == 0) {
-							rpedido.setrepehofi(inghora);
-							rpedido.setrepeesta("FINALIZADO");
-							boolean editoRegistro = grpedido.updateregistro_pedido(rpedido);
+						if(edito) {
+							int countPendiente = grdpedido.getregistro_pedido_detalle_pendiente(rpedido.getrepecodsx());
 							
-							if(!editoRegistro) {
-								isValid = false;
-								mensaje = "El registro del pedido no se completo";
-								msg.setMessage(mensaje);
-								msg.setStatus(JsonUtil.FAIL);
+							if(countPendiente == 0) {
+								rpedido.setrepehofi(inghora);
+								rpedido.setrepeesta("FINALIZADO");
+								boolean editoRegistro = grpedido.updateregistro_pedido(rpedido);
+								
+								if(!editoRegistro) {
+									isValid = false;
+									mensaje = "El registro del pedido no se completo";
+									msg.setMessage(mensaje);
+									msg.setStatus(JsonUtil.FAIL);
+								} else {
+									mensaje = "Registro completado correctamente";
+									msg.setMessage(mensaje);
+									msg.setStatus(JsonUtil.SUCESS);
+								}
 							} else {
-								mensaje = "Registro completado correctamente";
+								mensaje = "Registro finalizado correctamente";
 								msg.setMessage(mensaje);
 								msg.setStatus(JsonUtil.SUCESS);
 							}
-						} else {
-							mensaje = "Registro finalizado correctamente";
-							msg.setMessage(mensaje);
-							msg.setStatus(JsonUtil.SUCESS);
 						}
+					} else {
+						isValid = false;
+						mensaje = "El producto y la ubicacion es invalida";
+						msg.setMessage(mensaje);
+						msg.setStatus(JsonUtil.FAIL);
 					}
+					
+					
 				} else {
 					isValid = false;
 					mensaje = "El registro del pedido es invalido";
