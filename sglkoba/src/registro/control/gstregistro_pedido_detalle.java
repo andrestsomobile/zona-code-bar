@@ -49,10 +49,20 @@ public class gstregistro_pedido_detalle extends GstTabla
         return getPaginas(consulta);
     }
 
-    public boolean crearregistro_pedido_detalle(String rpdecodsx, String rpderegped, String rpdenumpedido, String rpdetire, String rpdeterminado)
+    public boolean crearregistro_pedido_detalle(String rpdecodsx, String rpderegped, String rpdenumpedido, String rpdetire, String rpdeterminado,
+    		String producto, String posicion)
         throws SQLException
     {
-        String insert = (new StringBuilder()).append("INSERT INTO registro_pedido_detalle (rpdecodsx, rpderegped, rpdenumpedido, rpdetire, rpdeterminado) VALUES (").append(rpdecodsx == null ? "NULL" : (new StringBuilder()).append("'").append(rpdecodsx).append("'").toString()).append(",").append(rpderegped == null ? "NULL" : (new StringBuilder()).append("'").append(rpderegped).append("'").toString()).append(",").append(rpdenumpedido == null ? "NULL" : (new StringBuilder()).append("'").append(rpdenumpedido).append("'").toString()).append(",").append(rpdetire == null ? "NULL" : (new StringBuilder()).append("'").append(rpdetire).append("'").toString()).append(",").append(rpdeterminado == null ? "NULL" : (new StringBuilder()).append("'").append(rpdeterminado).append("'").toString()).append(")").toString();
+        String insert = (new StringBuilder()).append("INSERT INTO registro_pedido_detalle (rpdecodsx, rpderegped, rpdenumpedido, rpdetire, rpdeterminado, rpdeproducto, rpdeposicion) "
+        		+ "VALUES (").append(rpdecodsx == null ? "NULL" : (new StringBuilder()).append("'")
+        				.append(rpdecodsx).append("'").toString()).append(",").append(rpderegped == null ? "NULL" : (new StringBuilder()).append("'")
+						.append(rpderegped).append("'").toString()).append(",").append(rpdenumpedido == null ? "NULL" : (new StringBuilder()).append("'")
+						.append(rpdenumpedido).append("'").toString()).append(",").append(rpdetire == null ? "NULL" : (new StringBuilder()).append("'")
+						.append(rpdetire).append("'").toString()).append(",").append(rpdeterminado == null ? "NULL" : (new StringBuilder()).append("'")
+						.append(rpdeterminado).append("'").toString()).append(",").append(producto == null ? "NULL" : (new StringBuilder()).append("'")
+								.append(producto).append("'").toString()).append(",").append(posicion == null ? "NULL" : (new StringBuilder()).append("'")
+										.append(posicion).append("'").toString()).append(")").toString();
+        System.out.println(insert);
         int resp = db.executeUpdate(insert);
         return resp != 0;
     }
@@ -68,11 +78,32 @@ public class gstregistro_pedido_detalle extends GstTabla
         String cad = (new StringBuilder()).append("SELECT * FROM registro_pedido_detalle WHERE rpderegped ='").append(rpderegped).append("'").toString();
         return (registro_pedido_detalle)getEntidad(cad);
     }
+    
+    public registro_pedido_detalle getregistro_pedido_detalle_numpedido(String rpderegped, String rpdenumpedido, String producto, String posicion)
+    {
+        String cad = (new StringBuilder()).append("SELECT * FROM registro_pedido_detalle WHERE rpderegped ='").append(rpderegped)
+        		.append("' AND rpdenumpedido ='").append(rpdenumpedido).append("'")
+        		.append(" AND rpdeproducto ='").append(producto).append("'")
+        		.append(" AND rpdeposicion ='").append(posicion).append("'").toString();
+        return (registro_pedido_detalle)getEntidad(cad);
+    }
+    
+    public int getregistro_pedido_detalle_pendiente(String rpderegped)
+    {
+        String cad = (new StringBuilder()).append("SELECT count(1) FROM registro_pedido_detalle WHERE rpdeterminado = 'N' AND rpderegped ='").append(rpderegped).append("'").toString();
+        String resp = getCampo(cad);
+        return resp == null ? 0 : Integer.parseInt(resp);
+    }
 
     public boolean updateregistro_pedido_detalle(registro_pedido_detalle entity)
         throws SQLException
     {
-        String cad = (new StringBuilder()).append("update registro_pedido_detalle set  rpdecodsx = ").append(entity.getrpdecodsx() != null ? (new StringBuilder()).append("'").append(entity.getrpdecodsx()).append("'").toString() : "NULL").append(",").append(" rpderegped= ").append(entity.getrpderegped() != null ? (new StringBuilder()).append("'").append(entity.getrpderegped()).append("'").toString() : "NULL").append(",").append(" rpdenumpedido = ").append(entity.getrpdenumpedido() != null ? (new StringBuilder()).append("'").append(entity.getrpdenumpedido()).append("'").toString() : "NULL").append(",").append(" rpdetire = ").append(entity.getrpdetire() != null ? (new StringBuilder()).append("'").append(entity.getrpdetire()).append("'").toString() : "NULL").append(" where repecodsx = ").append(entity.getrpdecodsx()).toString();
+        String cad = (new StringBuilder()).append("update registro_pedido_detalle set  rpdecodsx = ").append(entity.getrpdecodsx() != null ? (new StringBuilder()).append("'").append(entity.getrpdecodsx()).append("'").toString() : "NULL").append(",").append(" rpderegped= ").append(entity.getrpderegped() != null ? (new StringBuilder()).append("'").append(entity.getrpderegped()).append("'").toString() : "NULL").append(",").append(" rpdenumpedido = ").append(entity.getrpdenumpedido() != null ? (new StringBuilder()).append("'").append(entity.getrpdenumpedido()).append("'").toString() : "NULL").append(",").append(" rpdetire = ").append(entity.getrpdetire() != null ? (new StringBuilder()).append("'").append(entity.getrpdetire()).append("'").toString() : "NULL")
+        		.append(",").append(" rpdeterminado = ").append(entity.getrpdeterminado() != null ? (new StringBuilder()).append("'").append(entity.getrpdeterminado()).append("'").toString() : "NULL")
+        		.append(",").append(" rpnovedad = ").append(entity.getrpnovedad() != null ? (new StringBuilder()).append("'").append(entity.getrpnovedad()).append("'").toString() : "NULL")
+        		.append(",").append(" rpdeproducto = ").append(entity.getRpdeproducto() != null ? (new StringBuilder()).append("'").append(entity.getRpdeproducto()).append("'").toString() : "NULL")
+        		.append(",").append(" rpdeposicion = ").append(entity.getRpdeposicion() != null ? (new StringBuilder()).append("'").append(entity.getRpdeposicion()).append("'").toString() : "NULL")
+        		.append(" where rpdecodsx = ").append(entity.getrpdecodsx()).toString();
         int resp = db.executeUpdate(cad);
         return resp != 0;
     }
@@ -123,10 +154,10 @@ public class gstregistro_pedido_detalle extends GstTabla
     public String Getrpdecodsx()
     {
         String cad = "";
-        cad = "SELECT max(rpdecodsx) FROM registro_pedido_detalle";
+        cad = "SELECT max(rpdecodsx)+1 FROM registro_pedido_detalle";
         System.out.print(cad);
         String resp = getCampo(cad);
-        return resp == null ? "0" : resp;
+        return resp == null ? "1" : resp;
     }
 
     public String Getrpdecodsx(String Ident)

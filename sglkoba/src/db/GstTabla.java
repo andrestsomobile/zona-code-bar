@@ -49,6 +49,39 @@ public abstract class GstTabla {
 		}
 		return al;
 	}
+	
+	protected ArrayList getLista(String consulta, Class className){
+		ArrayList al = new ArrayList();
+		try {
+			ResultSet rs = db.executeQuery(consulta);
+			@SuppressWarnings("unused")
+			java.sql.ResultSetMetaData rsm = rs.getMetaData();
+			while (rs.next()) {
+				al.add(getEntidad(rs, className));
+			}
+		} catch (Exception ex) {
+			System.out.println(ex.toString());
+			ex.printStackTrace();
+		}
+		return al;
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected ArrayList getListaEdit(String consulta){
+		ArrayList al = new ArrayList();
+		try {
+			ResultSet rs = db.executeQuery(consulta);
+			@SuppressWarnings("unused")
+			java.sql.ResultSetMetaData rsm = rs.getMetaData();
+			while (rs.next()) {
+				al.add(getEntidadId(rs));
+			}
+		} catch (Exception ex) {
+			System.out.println(ex.toString());
+			ex.printStackTrace();
+		}
+		return al;
+	}
 	protected Collection<ArrayList<String>> getListaDeListas(String consulta){
 		ArrayList<ArrayList<String>> al = new ArrayList<ArrayList<String>>();
 		try {
@@ -91,13 +124,45 @@ public abstract class GstTabla {
 			ex.printStackTrace();
 		}
 		return campo;
-	}	
+	}
+	
+	protected Object getEntidad(ResultSet rs, Class className) throws Exception{
+		ResultSetMetaData rsm = rs.getMetaData();
+		Class [] cargs = new Class[rsm.getColumnCount()];//arreglo del tipo de dato de los parametros del constructor a crear
+		Object [] oargs = new Object[rsm.getColumnCount()];//arreglo de los parametros del constructor;
+		for(int i=0; i < rsm.getColumnCount(); i++){
+			oargs[i] = rs.getString(i+1);			
+			cargs[i] = String.class;
+		}
+		//Class classEntidad = Class.forName(nombreEntidad);
+		Constructor c = className.getConstructor(cargs);
+		return c.newInstance(oargs);
+	}
+	
 	protected Object getEntidad(ResultSet rs) throws Exception{
 		ResultSetMetaData rsm = rs.getMetaData();
 		Class [] cargs = new Class[rsm.getColumnCount()];//arreglo del tipo de dato de los parametros del constructor a crear
 		Object [] oargs = new Object[rsm.getColumnCount()];//arreglo de los parametros del constructor;
 		for(int i=0; i < rsm.getColumnCount(); i++){
 			oargs[i] = rs.getString(i+1);			
+			cargs[i] = String.class;
+		}
+		//Class classEntidad = Class.forName(nombreEntidad);
+		Constructor c = classEntidad.getConstructor(cargs);
+		return c.newInstance(oargs);
+	}
+	
+	protected Object getEntidadId(ResultSet rs) throws Exception{
+		ResultSetMetaData rsm = rs.getMetaData();
+		Class [] cargs = new Class[rsm.getColumnCount()];//arreglo del tipo de dato de los parametros del constructor a crear
+		Object [] oargs = new Object[rsm.getColumnCount()];//arreglo de los parametros del constructor;
+		for(int i=0; i < rsm.getColumnCount(); i++){
+			if(rs.getObject(i+1) != null) {
+				oargs[i] = rs.getObject(i+1).toString();
+			} else {
+				oargs[i] = "";
+			}
+						
 			cargs[i] = String.class;
 		}
 		//Class classEntidad = Class.forName(nombreEntidad);

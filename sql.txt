@@ -1,0 +1,73 @@
+alter table public.usuario add usucedula character varying
+
+alter table movimiento.ingreso add ingusuario character varying 
+
+alter table public.registro_pedido_detalle add rpnovedad character varying
+
+
+create sequence posicion_estanteria_pk_seq;
+
+CREATE TABLE IF NOT EXISTS posicion_estanteria
+(
+    pk_posicion_estanteria integer NOT NULL DEFAULT nextval('posicion_estanteria_pk_seq'::regclass),
+    bodega character varying(200) NOT NULL,
+    posicion character varying(500) NOT NULL,
+    CONSTRAINT posicion_estanteria_pk PRIMARY KEY (pk_posicion_estanteria)
+);
+
+CREATE TABLE IF NOT EXISTS public.inventario
+(
+    invcodsx integer NOT NULL,
+    Invfecha date NOT NULL DEFAULT now(),
+    Invconteo integer NOT NULL,
+    Invterminal character varying NOT NULL,
+    Invusuario character varying NOT NULL,
+    Invbodega integer NOT NULL,
+    Invposicion character varying NOT NULL,
+    Invreferencia character varying NOT NULL,
+    Invproducto integer NULL,
+    invgrupoid integer NOT NULL,
+    invinventariopadre integer NULL,
+    CONSTRAINT pk_inventario PRIMARY KEY (invcodsx),
+    CONSTRAINT fk_invbodega FOREIGN KEY (invbodega)
+        REFERENCES public.bodega (bodcodsx),
+	CONSTRAINT fk_invproducto FOREIGN KEY (invproducto)
+        REFERENCES public.producto (procodsx) 
+);
+
+alter table registro_pedido_detalle add rpdeproducto character varying(200)
+
+alter table registro_pedido_detalle add rpdeposicion character varying(500)
+
+ALTER TABLE IF EXISTS public.registro_pedido_detalle DROP CONSTRAINT IF EXISTS uq_regpedido;	
+
+
+CREATE OR REPLACE FUNCTION public.actualiza_registro_pedido()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    VOLATILE
+    COST 100
+AS $BODY$
+--
+--Trigger que actualiza el estado del registro_pedido a FINALIZADO si todos sus registro_pedido_detalle estan en rpdeterminado = "S"
+
+DECLARE
+  sin_terminar int;
+
+BEGIN
+
+  IF TG_RELNAME='registro_pedido_detalle' THEN
+    IF new.rpdeterminado = 'S' THEN
+      raise notice 'estoy en if termindado = s';
+      SELECT count(rpdecodsx) INTO sin_terminar FROM registro_pedido_detalle WHERE rpderegped = new.rpderegped AND rpdeterminado = 'N';
+      IF sin_terminar IS NOT NULL AND sin_terminar = 0 THEN
+        UPDATE pedido SET pedestado = 'FINALIZADO' WHERE pedcodsx = new.rpdenumpedido;
+        PERFORM automatico_posiciones_bodega();
+        UPDATE registro_pedido SET repeesta = 'FINALIZADO',repehofi = CURRENT_TIME WHERE repecodsx = new.rpderegped;
+      END IF;
+    END IF;	
+  END IF;
+RETURN new;
+END;
+
+$BODY$;

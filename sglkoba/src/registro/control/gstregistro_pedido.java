@@ -86,6 +86,18 @@ public class gstregistro_pedido extends GstTabla
         String cad = "SELECT * FROM registro_pedido WHERE repecodsx ='"+repecodsx+"'";
         return (registro_pedido)getEntidad(cad);
     }
+    
+    public registro_pedido getRegistroPedidoByPedido(String numpedido)
+    {
+        String cad = "select  r.* from ( "
+        		+ "select distinct r.* from registro_pedido r, 	registro_pedido_detalle rp "
+        		+ "WHERE rp.rpderegped = r.repecodsx "
+        		+ "and rp.rpdenumpedido = '40' "
+        		+ "and r.repeesta = 'TRAMITE' "
+        		+ "	) r "
+        		+ "	order by 1 desc limit 1";
+        return (registro_pedido)getEntidad(cad);
+    }
 
     public registro_pedido getregistro_pedido_ultimo(String repecodsx)
     {
@@ -98,6 +110,7 @@ public class gstregistro_pedido extends GstTabla
     {
         String cad = (new StringBuilder()).append("update registro_pedido set  repecodsx = ").append(entity.getrepecodsx() != null ? (new StringBuilder()).append("'").append(entity.getrepecodsx()).append("'").toString() : "NULL").append(",").append(" repefecha= ").append(entity.getrepefecha() != null ? (new StringBuilder()).append("'").append(entity.getrepefecha()).append("'").toString() : "NULL").append(",").append(" repeempleado = ").append(entity.getrepeempleado() != null ? (new StringBuilder()).append("'").append(entity.getrepeempleado()).append("'").toString() : "NULL").append(",").append(" repehoin = ").append(entity.getrepehoin() != null ? (new StringBuilder()).append("'").append(entity.getrepehoin()).append("'").toString() : "NULL").append(",").append(" repehofi = ").append(entity.getrepehofi() != null ? (new StringBuilder()).append("'").append(entity.getrepehofi()).append("'").toString() : "NULL").append(",").append(" repecanped = ").append(entity.getrepecanped() != null ? (new StringBuilder()).append("'").append(entity.getrepecanped()).append("'").toString() : "NULL").append(",").append(" repeesta = ").append(entity.getrepeesta() != null ? (new StringBuilder()).append("'").append(entity.getrepeesta()).append("'").toString() : "NULL").append(" where repecodsx = ").append(entity.getrepecodsx()).toString();
         int resp = db.executeUpdate(cad);
+        System.out.println(cad);
         return resp != 0;
     }
 
@@ -168,10 +181,10 @@ public class gstregistro_pedido extends GstTabla
     public String Getrepecodsx()
     {
         String cad = "";
-        cad = "SELECT max(repecodsx) FROM registro_pedido";
+        cad = "SELECT max(repecodsx)+1 FROM registro_pedido";
         System.out.print(cad);
         String resp = getCampo(cad);
-        return resp == null ? "0" : resp;
+        return resp == null ? "1" : resp;
     }
 
     public Collection getregistro_pedidos(String fechain, String fechafin)
